@@ -1,8 +1,11 @@
-const express = require('express');
-const app = express();
+require('dotenv').config();
+const { Telegraf } = require('telegraf');
 
-const PORT = 3000;
+const bot = new Telegraf(process.env.BOT_TOKEN)
+bot.start((ctx) => ctx.reply('Добро пожаловать в вашу мета-библиотеку!'));
 
-app.listen(PORT, () => {
-  console.log('Server has been started...');
-})
+bot.launch();
+
+// Enable graceful stop
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
