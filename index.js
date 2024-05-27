@@ -28,26 +28,4 @@ bot.onText(/\/start/, async (msg) => {
 
 bot.onText(/\/add/, addBook.bind(this, bot));
 
-// Handle callback queries
-bot.on('callback_query', function onCallbackQuery(callbackQuery) {
-  console.log('callback_query');
-});
-
-// bot.onText(/\/add/, async (msg) => {
-  // const authorNamePrompt = await bot.sendMessage(msg.chat.id, 'Введите имя автора', {
-  //   reply_markup: {
-  //     force_reply: true,
-  //   }
-  // });
-  // // console.log(authorNamePrompt);
-  // bot.onReplyToMessage(msg.chat.id, authorNamePrompt.message_id, async (nameMsg) => {
-  //   console.log('name message', nameMsg);
-  //   const bookNamePrompt = await bot.sendMessage(msg.chat.id, 'Введите наименование книги', {
-  //     reply_markup: {
-  //       force_reply: true,
-  //     }
-  //   });
-  // })
-// })
-
 bot.on("polling_error", err => console.log(err.data.error.message));
