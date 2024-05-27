@@ -1,3 +1,5 @@
+const { getValidatedData, getValidatedPagesAmount, getValidatedRating } = require('./helpers');
+
 async function addBook(bot, msg) {
   try {
     await bot.sendMessage(msg.chat.id, `
@@ -53,13 +55,15 @@ async function addBook(bot, msg) {
                 });
 
                 bot.onReplyToMessage(msg.chat.id, reviewPrompt.message_id, async (reviewMsg) => {
+
+
                   const bookItem = {
                     author: nameMsg.text,
                     title: bookNameMsg.text,
-                    startedAt: startDateMsg.text,
-                    finishedAt: endDateMsg.text,
-                    pages: pagesAmountMsg.text,
-                    rating: ratingMsg.text,
+                    startedAt: getValidatedData(startDateMsg.text),
+                    finishedAt: getValidatedData(endDateMsg.text),
+                    pages: getValidatedPagesAmount(pagesAmountMsg.text),
+                    rating: getValidatedRating(ratingMsg.text),
                     review: reviewMsg.text,
                   }
                   console.log('book item is', bookItem);
