@@ -3,17 +3,8 @@ function getValidatedData(value) {
     return null;
   }
 
-  try {
-    // FIXME: this return Nan instead null
-    const date = new Date(value);
-    if ('getTime' in date) {
-      return date.getTime();
-    } else {
-      return null;
-    }
-  } catch {
-    return null;
-  }
+  const date = new Date(value).getTime();
+  return isNaN(date) ? null : date;
 }
 
 function getValidatedPagesAmount(value) {
