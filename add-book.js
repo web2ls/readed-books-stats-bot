@@ -1,6 +1,7 @@
 const { getValidatedData, getValidatedPagesAmount, getValidatedRating } = require('./helpers');
 
 async function addBook(bot, msg) {
+  console.log(msg);
   try {
     await bot.sendMessage(msg.chat.id, `
       Необходимо заполнить информацию о книге. В те поля, которые вы пропускаете ставьте прочерк '-'. В случае ошибочного заполнения - будет сохранено значение по-умолчанию. Исправить ошибку можно будет при редактировании информации.
@@ -58,6 +59,7 @@ async function addBook(bot, msg) {
 
 
                   const bookItem = {
+                    userId: msg.from.id,
                     author: nameMsg.text,
                     title: bookNameMsg.text,
                     startedAt: getValidatedData(startDateMsg.text),
