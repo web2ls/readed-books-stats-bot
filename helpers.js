@@ -1,4 +1,4 @@
-function getValidatedData(value) {
+function getValidatedDate(value) {
   if (value === '-') {
     return null;
   }
@@ -9,26 +9,22 @@ function getValidatedData(value) {
 
 function getValidatedPagesAmount(value) {
   if (value === '-' || isNaN(value)) {
-     return null;
+     return 0;
   }
 
   return Number(value);
 }
 
 function getValidatedRating(value) {
-  if (value === '-' || isNaN(value)) {
-    return null;
-  }
-
-  if (value <= 0 || value > 5) {
-    return null;
+  if (value === '-' || isNaN(value) || value <= 0 || value > 5) {
+    return 0;
   }
 
   return Number(value);
 }
 
 module.exports = {
-  getValidatedData,
+  getValidatedDate,
   getValidatedPagesAmount,
   getValidatedRating,
 }

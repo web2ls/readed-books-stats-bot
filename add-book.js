@@ -62,9 +62,9 @@ async function addBook(bot, msg) {
                     userId: msg.from.id,
                     author: nameMsg.text,
                     title: bookNameMsg.text,
-                    startedAt: getValidatedData(startDateMsg.text),
-                    finishedAt: getValidatedData(endDateMsg.text),
-                    pages: getValidatedPagesAmount(pagesAmountMsg.text),
+                    startedAt: getValidatedDate(startDateMsg.text),
+                    finishedAt: getValidatedDate(endDateMsg.text),
+                    pagesAmount: getValidatedPagesAmount(pagesAmountMsg.text),
                     rating: getValidatedRating(ratingMsg.text),
                     review: reviewMsg.text,
                   }

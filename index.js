@@ -5,55 +5,36 @@ const app = express();
 
 const db = require('./db');
 
-const createTableQuery = `
-  CREATE TABLE IF NOT EXISTS users (
+const createTableBooksQuery = `
+  CREATE TABLE IF NOT EXISTS books (
     id INTEGER PRIMARY KEY,
-    username TEXT NOT NULL,
-    email TEXT NOT NULL
+    user_id INTEGER NOT NULL,
+    author TEXT NOT NULL,
+    title TEXT NOT NULL,
+    started_at INTEGER,
+    finished_at INTEGER,
+    pages_amount INTEGER NOT NULL,
+    rating INTEGER NOT NULL,
+    review TEXT NOT NULL
   )
 `;
 
 db.serialize(() => {
-  db.run(createTableQuery, (error) => {
+  db.run(createTableBooksQuery, (error) => {
     if (error) {
       console.log('Error on creating table ', error.message);
     } else {
-      console.log('Table created successfully');
+      console.log('Initial tables created successfully');
     }
   })
 });
 
-const insertUserQuery = `
-  INSERT INTO users (username, email) VALUES ('skif', 'skif@mail.com')
-`;
-
-db.run(insertUserQuery, (error) => {
-  if (error) {
-    console.log('Failed inset into table');
-  } else {
-    console.log('Row created');
-  }
-})
-
-const selectQuery = `
-  SELECT * FROM users
-`;
-
-db.all(selectQuery, (err, rows) => {
-  if (err) {
-    console.error('Error fetching data:', err.message);
-  } else {
-    console.log('Fetched data:', rows);
-  }
-});
-
 const PORT = process.env.PORT;
+const TOKEN = process.env.BOT_TOKEN;
 
 const addBook = require('./add-book');
 
-const token = process.env.BOT_TOKEN;
-
-const bot = new TelegramBot(token, {polling: true});
+const bot = new TelegramBot(TOKEN, {polling: true});
 
 const commands = [
   {
