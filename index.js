@@ -4,7 +4,8 @@ const express = require('express');
 const app = express();
 
 const db = require('./db');
-const addBookTgController = require('./tg-controllers/add-book-tg-controller');
+const addBookTGController = require('./tg-controllers/add-book-tg-controller');
+const findBookTGController = require('./tg-controllers/find-book-tg-controller');
 
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
@@ -45,9 +46,13 @@ const bot = new TelegramBot(TOKEN, {polling: true});
 
 const commands = [
   {
-      command: "add",
-      description: "Добавить книгу"
+      command: 'add',
+      description: 'Добавить книгу'
   },
+  {
+    command: "find",
+    description: 'Найти книгу'
+  }
 ]
 
 bot.setMyCommands(commands);
@@ -62,7 +67,9 @@ bot.onText(/\/start/, async (msg) => {
   }
 })
 
-bot.onText(/\/add/, addBookTgController.bind(this, bot));
+bot.onText(/\/add/, addBookTGController.bind(this, bot));
+
+bot.onText(/\/find/, findBookTGController.bind(this, bot));
 
 bot.on("polling_error", err => console.log(err.data.error.message));
 

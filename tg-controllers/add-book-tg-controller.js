@@ -1,7 +1,7 @@
 const { getValidatedDate, getValidatedPagesAmount, getValidatedRating, getValidatedText } = require('../helpers');
 const addBookController = require('../controllers/add-book-controller');
 
-async function addBookTgController(bot, msg) {
+async function addBookTGController(bot, msg) {
   try {
     await bot.sendMessage(msg.chat.id, `
       Необходимо заполнить информацию о книге. В те поля, которые вы пропускаете ставьте прочерк '-'. В случае ошибочного заполнения - будет сохранено значение по-умолчанию. Исправить ошибку можно будет при редактировании информации.
@@ -87,4 +87,4 @@ async function addBookTgController(bot, msg) {
   }
 }
 
-module.exports = addBookTgController;
+module.exports = addBookTGController;
