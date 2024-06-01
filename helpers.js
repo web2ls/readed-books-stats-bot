@@ -23,8 +23,13 @@ function getValidatedRating(value) {
   return Number(value);
 }
 
+function getValidatedText(value) {
+  return value.trim();
+}
+
 module.exports = {
   getValidatedDate,
   getValidatedPagesAmount,
   getValidatedRating,
+  getValidatedText,
 }

@@ -1,7 +1,7 @@
-const { getValidatedData, getValidatedPagesAmount, getValidatedRating } = require('./helpers');
+const { getValidatedDate, getValidatedPagesAmount, getValidatedRating, getValidatedText } = require('../helpers');
+const addBookController = require('../controllers/add-book-controller');
 
-async function addBook(bot, msg) {
-  console.log(msg);
+async function addBookTgController(bot, msg) {
   try {
     await bot.sendMessage(msg.chat.id, `
       Необходимо заполнить информацию о книге. В те поля, которые вы пропускаете ставьте прочерк '-'. В случае ошибочного заполнения - будет сохранено значение по-умолчанию. Исправить ошибку можно будет при редактировании информации.
@@ -56,20 +56,19 @@ async function addBook(bot, msg) {
                 });
 
                 bot.onReplyToMessage(msg.chat.id, reviewPrompt.message_id, async (reviewMsg) => {
-
-
-                  const bookItem = {
+                  const newBook = {
                     userId: msg.from.id,
-                    author: nameMsg.text,
-                    title: bookNameMsg.text,
+                    author: getValidatedText(nameMsg.text),
+                    title: getValidatedText(bookNameMsg.text),
                     startedAt: getValidatedDate(startDateMsg.text),
                     finishedAt: getValidatedDate(endDateMsg.text),
                     pagesAmount: getValidatedPagesAmount(pagesAmountMsg.text),
                     rating: getValidatedRating(ratingMsg.text),
-                    review: reviewMsg.text,
+                    review: getValidatedText(reviewMsg.text),
                   }
-                  console.log('book item is', bookItem);
+                  console.log('book item is', newBook);
                   bot.clearReplyListeners();
+                  await addBookController(newBook);
                   await bot.sendMessage(
                     msg.chat.id,
                     `Книга добавлена`
@@ -88,4 +87,4 @@ async function addBook(bot, msg) {
   }
 }
 
-module.exports = addBook;
+module.exports = addBookTgController;

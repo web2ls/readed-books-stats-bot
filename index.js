@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 
 const db = require('./db');
+const addBookTgController = require('./tg-controllers/add-book-tg-controller');
 
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
@@ -29,10 +30,16 @@ db.serialize(() => {
   })
 });
 
+db.all('SELECT * FROM books', (err, rows) => {
+  if (err) {
+    console.error('Error fetching data:', err.message);
+  } else {
+    console.log('Fetched data:', rows);
+  }
+});
+
 const PORT = process.env.PORT;
 const TOKEN = process.env.BOT_TOKEN;
-
-const addBook = require('./add-book');
 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
@@ -55,7 +62,7 @@ bot.onText(/\/start/, async (msg) => {
   }
 })
 
-bot.onText(/\/add/, addBook.bind(this, bot));
+bot.onText(/\/add/, addBookTgController.bind(this, bot));
 
 bot.on("polling_error", err => console.log(err.data.error.message));
 
