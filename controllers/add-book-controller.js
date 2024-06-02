@@ -1,5 +1,6 @@
 const db = require('../db');
 
+// TODO: add sanitazing for user inputs
 function addBookController(newBook) {
   return new Promise((resolve, reject) => {
     const insertNewBookQuery = `
