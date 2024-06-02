@@ -1,4 +1,11 @@
-function getValidatedDate(value) {
+const validator = require('validator');
+
+function sanitizeValue(value) {
+  return validator.escape(value);
+}
+
+function getValidatedDate(input) {
+  const value = sanitizeValue(input);
   if (value === '-') {
     return null;
   }
@@ -7,7 +14,8 @@ function getValidatedDate(value) {
   return isNaN(date) ? null : date;
 }
 
-function getValidatedPagesAmount(value) {
+function getValidatedPagesAmount(input) {
+  const value = sanitizeValue(input);
   if (value === '-' || isNaN(value)) {
      return 0;
   }
@@ -15,7 +23,8 @@ function getValidatedPagesAmount(value) {
   return Number(value);
 }
 
-function getValidatedRating(value) {
+function getValidatedRating(input) {
+  const value = sanitizeValue(input);
   if (value === '-' || isNaN(value) || value <= 0 || value > 5) {
     return 0;
   }
@@ -23,7 +32,8 @@ function getValidatedRating(value) {
   return Number(value);
 }
 
-function getValidatedText(value) {
+function getValidatedText(input) {
+  const value = sanitizeValue(input);
   return value.trim();
 }
 
