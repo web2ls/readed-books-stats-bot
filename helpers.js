@@ -37,9 +37,17 @@ function getValidatedText(input) {
   return value.trim();
 }
 
+function getBookIdFromString(value) {
+  const textAsArray = value.split(' ');
+  const lastEl = textAsArray[textAsArray.length - 1];
+  const id = lastEl.slice(1, lastEl.length - 1);
+  return id;
+}
+
 module.exports = {
   getValidatedDate,
   getValidatedPagesAmount,
   getValidatedRating,
   getValidatedText,
+  getBookIdFromString,
 }

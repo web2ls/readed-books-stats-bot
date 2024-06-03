@@ -6,6 +6,7 @@ const app = express();
 const db = require('./db');
 const addBookTGController = require('./tg-controllers/add-book-tg-controller');
 const findBookTGController = require('./tg-controllers/find-book-tg-controller');
+const { getBookIdFromString } = require('./helpers');
 
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
@@ -70,6 +71,15 @@ bot.onText(/\/start/, async (msg) => {
 bot.onText(/\/add/, addBookTGController.bind(this, bot));
 
 bot.onText(/\/find/, findBookTGController.bind(this, bot));
+
+bot.onText(/.*\[[\0-9]*\]$/, (msg) => {
+  console.log(msg.text);
+  const bookId = getBookIdFromString(msg.text);
+  console.log(bookId);
+  // TODO: return inline keyboard with exit menu button
+  // TODO: each button must contains book id
+  // TODO: each button - edit specific book property
+});
 
 bot.on("polling_error", err => console.log(err.data.error.message));
 
