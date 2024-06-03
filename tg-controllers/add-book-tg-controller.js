@@ -1,4 +1,3 @@
-const { getValidatedDate, getValidatedPagesAmount, getValidatedRating, getValidatedText } = require('../helpers');
 const addBookController = require('../controllers/add-book-controller');
 
 async function addBookTGController(bot, msg) {
@@ -58,15 +57,15 @@ async function addBookTGController(bot, msg) {
                 bot.onReplyToMessage(msg.chat.id, reviewPrompt.message_id, async (reviewMsg) => {
                   const newBook = {
                     userId: msg.from.id,
-                    author: getValidatedText(nameMsg.text),
-                    title: getValidatedText(bookNameMsg.text),
-                    startedAt: getValidatedDate(startDateMsg.text),
-                    finishedAt: getValidatedDate(endDateMsg.text),
-                    pagesAmount: getValidatedPagesAmount(pagesAmountMsg.text),
-                    rating: getValidatedRating(ratingMsg.text),
-                    review: getValidatedText(reviewMsg.text),
+                    author: nameMsg.text,
+                    title: bookNameMsg.text,
+                    startedAt: startDateMsg.text,
+                    finishedAt: endDateMsg.text,
+                    pagesAmount: pagesAmountMsg.text,
+                    rating: ratingMsg.text,
+                    review: reviewMsg.text,
                   }
-                  console.log('book item is', newBook);
+
                   bot.clearReplyListeners();
                   await addBookController(newBook);
                   await bot.sendMessage(

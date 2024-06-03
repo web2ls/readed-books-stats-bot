@@ -1,8 +1,22 @@
 const db = require('../db');
 
-// TODO: add sanitazing for user inputs
-function addBookController(newBook) {
+const { getValidatedDate, getValidatedPagesAmount, getValidatedRating, getValidatedText } = require('../helpers');
+
+function addBookController(value) {
   return new Promise((resolve, reject) => {
+    const newBook = {
+      userId: value.userId,
+      author: getValidatedText(value.author),
+      title: getValidatedText(value.title),
+      startedAt: getValidatedDate(value.startedAt),
+      finishedAt: getValidatedDate(value.finishedAt),
+      pagesAmount: getValidatedPagesAmount(value.pagesAmount),
+      rating: getValidatedRating(value.rating),
+      review: getValidatedText(value.review),
+    }
+
+    console.log('book item is', newBook);
+
     const insertNewBookQuery = `
       INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', '${newBook.startedAt}', '${newBook.finishedAt}', '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
     `;
