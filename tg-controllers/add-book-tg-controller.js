@@ -1,4 +1,4 @@
-const addBookController = require('../controllers/add-book-controller');
+const BookController = require('../controllers/book-controller');
 
 async function addBookTGController(bot, msg) {
   try {
@@ -67,7 +67,7 @@ async function addBookTGController(bot, msg) {
                   }
 
                   bot.clearReplyListeners();
-                  await addBookController(newBook);
+                  await BookController.addBook(newBook);
                   await bot.sendMessage(
                     msg.chat.id,
                     `Книга добавлена`

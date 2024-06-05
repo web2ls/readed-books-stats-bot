@@ -1,6 +1,6 @@
-const findBookController = require('../controllers/find-book-controller');
+const BookController = require('../controllers/book-controller');
 
-async function findBookTGController(bot, msg) {
+async function searchBookTGController(bot, msg) {
   try {
     console.log('find book');
     await bot.sendMessage(msg.chat.id, `
@@ -15,7 +15,7 @@ async function findBookTGController(bot, msg) {
 
     bot.onReplyToMessage(msg.chat.id, searchQueryPrompt.message_id, async (searchQueryMsg) => {
       console.log(searchQueryMsg.text);
-      const searchedBooks = await findBookController(searchQueryMsg.text);
+      const searchedBooks = await BookController.searchBook(searchQueryMsg.text);
 
       if (searchedBooks.length === 0) {
         await bot.sendMessage(msg.chat.id, `Книг не найдено`);
@@ -36,4 +36,4 @@ async function findBookTGController(bot, msg) {
   }
 }
 
-module.exports = findBookTGController;
+module.exports = searchBookTGController;

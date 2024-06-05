@@ -5,7 +5,7 @@ const app = express();
 
 const db = require('./db');
 const addBookTGController = require('./tg-controllers/add-book-tg-controller');
-const findBookTGController = require('./tg-controllers/find-book-tg-controller');
+const searchBookTGController = require('./tg-controllers/search-book-tg-controller');
 const { getBookIdFromString } = require('./helpers');
 
 const createTableBooksQuery = `
@@ -70,7 +70,7 @@ bot.onText(/\/start/, async (msg) => {
 
 bot.onText(/\/add/, addBookTGController.bind(this, bot));
 
-bot.onText(/\/find/, findBookTGController.bind(this, bot));
+bot.onText(/\/find/, searchBookTGController.bind(this, bot));
 
 bot.onText(/.*\[[\0-9]*\]$/, (msg) => {
   console.log(msg.text);
