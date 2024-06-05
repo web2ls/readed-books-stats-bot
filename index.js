@@ -72,13 +72,23 @@ bot.onText(/\/add/, addBookTGController.bind(this, bot));
 
 bot.onText(/\/find/, searchBookTGController.bind(this, bot));
 
-bot.onText(/.*\[[\0-9]*\]$/, (msg) => {
+bot.onText(/.*\[[\0-9]*\]$/, async (msg) => {
   console.log(msg.text);
+  console.log(msg);
   const bookId = getBookIdFromString(msg.text);
   console.log(bookId);
-  // TODO: return inline keyboard with exit menu button
-  // TODO: each button must contains book id
-  // TODO: each button - edit specific book property
+
+  await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
+    reply_markup: {
+        keyboard: [
+            ['⭐️ Картинка', '⭐️ Видео'],
+            ['⭐️ Аудио', '⭐️ Голосовое сообщение'],
+            [{text: '⭐️ Контакт', bookId: 123}, '⭐️ Геолокация'],
+            ['❌ Закрыть меню']
+        ],
+        resize_keyboard: true
+    }
+})
 });
 
 bot.on("polling_error", err => console.log(err.data.error.message));

@@ -57,7 +57,7 @@ BookController = {
           reject();
         } else {
           console.log('Search has been completed:', rows);
-          const buttons = rows.map(book => [`${book.author}: ${book.title} [${book.id}]`]);
+          const buttons = rows.map(book => [{ text: `${book.author}: ${book.title} [${book.id}]`, id: book.id }]);
           resolve(buttons);
         }
       });
