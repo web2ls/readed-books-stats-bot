@@ -1,5 +1,6 @@
 const db = require('../db');
 
+// TODO: rename to search book
 async function findBookController(query) {
   return new Promise((resolve, reject) => {
     const searchBooksQuery = `

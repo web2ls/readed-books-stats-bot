@@ -2,6 +2,7 @@ const db = require('../db');
 
 const { getValidatedDate, getValidatedPagesAmount, getValidatedRating, getValidatedText } = require('../helpers');
 
+// TODO: move to book controller as a single point
 function addBookController(value) {
   return new Promise((resolve, reject) => {
     const newBook = {
