@@ -39,8 +39,6 @@ BookController = {
         review: getValidatedText(value.review),
       }
 
-      console.log('book item is', newBook);
-
       const insertNewBookQuery = `
         INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', '${newBook.startedAt ? newBook.startedAt : NULL}', '${newBook.finishedAt}', '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
       `;
@@ -69,7 +67,7 @@ BookController = {
           reject();
         } else {
           console.log('Search has been completed:', rows);
-          const buttons = rows.map(book => [{ text: `${book.author}: ${book.title} [${book.id}]`, id: book.id }]);
+          const buttons = rows.map(book => [`${book.author}: ${book.title} [${book.id}]`]);
           resolve(buttons);
         }
       });

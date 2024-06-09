@@ -2,7 +2,6 @@ const BookController = require('../controllers/book-controller');
 
 async function searchBookTGController(bot, msg) {
   try {
-    console.log('find book');
     await bot.sendMessage(msg.chat.id, `
       Поиск будет осуществляться по имени автора и наименованию книги. Будут выведены 5 подходящих вариантов.
   `);
@@ -14,7 +13,6 @@ async function searchBookTGController(bot, msg) {
     });
 
     bot.onReplyToMessage(msg.chat.id, searchQueryPrompt.message_id, async (searchQueryMsg) => {
-      console.log(searchQueryMsg.text);
       const searchedBooks = await BookController.searchBook(searchQueryMsg.text);
 
       if (searchedBooks.length === 0) {

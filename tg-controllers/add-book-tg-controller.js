@@ -12,7 +12,6 @@ async function addBookTGController(bot, msg) {
     });
 
     bot.onReplyToMessage(msg.chat.id, authorNamePrompt.message_id, async (nameMsg) => {
-      bot.clearReplyListeners();
       const bookNamePrompt = await bot.sendMessage(msg.chat.id, 'Наименование книги', {
         reply_markup: {
           force_reply: true,
@@ -80,6 +79,7 @@ async function addBookTGController(bot, msg) {
       })
     })
   } catch {
+    bot.clearReplyListeners();
     await bot.sendMessage(msg.chat.id, `
       Что-то пошло не так... Попробуйте повторить процесс позже.
     `);

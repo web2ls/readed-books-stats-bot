@@ -73,7 +73,11 @@ bot.onText(/\/add/, addBookTGController.bind(this, bot));
 
 bot.onText(/\/find/, searchBookTGController.bind(this, bot));
 
-bot.onText(/.*\[[\0-9]*\]$/, async (msg) => {
+bot.onText(/^(Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[0-9]*\]$/, async (msg) => {
+  console.log('readu for edit author fields');
+});
+
+bot.onText(/.*(:).*\[[\0-9]*\]$/, async (msg) => {
   console.log(msg.text);
   console.log(msg);
   const bookId = getBookIdFromString(msg.text);
@@ -86,25 +90,24 @@ bot.onText(/.*\[[\0-9]*\]$/, async (msg) => {
 
   // TODO: if (!bookItem) {error}
 
-  await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
+  // Автор|Наименование|Начали|Закончили|Страниц|Рейтинг|Обзор
+  const fieldBookForEditPrompt = await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
     reply_markup: {
         keyboard: [
-            [`Автор: ${bookItem.author}`],
-            [`Наименование: ${bookItem.title}`],
-            [`Когда начали: ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'}`],
-            [`Когда закончили: ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'}`],
-            [`Страниц в книг: ${bookItem.pages_amount}`, `Рейтинг: ${bookItem.rating}`],
-            [`Ревью: ${bookItem.review}`],
+            [`Автор ${bookItem.author} [${bookItem.id}]`],
+            [`Наименование ${bookItem.title} [${bookItem.id}]`],
+            [`Начали ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'} [${bookItem.id}]`],
+            [`Закончили ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'} [${bookItem.id}]`],
+            [`Страницы ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг ${bookItem.rating} [${bookItem.id}]`],
+            [`Обзор ${bookItem.review} [${bookItem.id}]`],
             ['Закрыть меню'],
         ],
-        resize_keyboard: true
+        resize_keyboard: true,
     }
   })
 });
 
 bot.onText(/Закрыть меню/, async (msg) => {
-  console.log('edit book naming');
-
   await bot.sendMessage(msg.chat.id, 'Меню закрыто', {
     reply_markup: {
       remove_keyboard: true,
@@ -112,9 +115,9 @@ bot.onText(/Закрыть меню/, async (msg) => {
   });
 });
 
-bot.onText(/Наименование/, async (msg) => {
-  console.log('edit book naming');
-});
+// bot.onText(/Наименование/, async (msg) => {
+//   console.log('edit book naming');
+// });
 
 bot.on("polling_error", err => console.log(err.data.error.message));
 
