@@ -9,9 +9,21 @@ const {
 
 BookController = {
   getBookById: (id) => {
-    const getBookQuery = `
-      SELECT * FROM books
-    `
+    return new Promise((resolve, reject) => {
+      const getBookByIdQuery = `
+        SELECT * FROM books WHERE id = ${id}
+      `;
+
+      db.get(getBookByIdQuery, (error, row) => {
+        if (error) {
+          console.log('Failed to get book by id', error);
+          reject();
+        } else {
+          console.log('finded book is, ', row);
+          resolve(row);
+        }
+      })
+    });
   },
 
   addBook: (value) => {
@@ -30,7 +42,7 @@ BookController = {
       console.log('book item is', newBook);
 
       const insertNewBookQuery = `
-        INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', '${newBook.startedAt}', '${newBook.finishedAt}', '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
+        INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', '${newBook.startedAt ? newBook.startedAt : NULL}', '${newBook.finishedAt}', '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
       `;
 
       db.run(insertNewBookQuery, (error) => {

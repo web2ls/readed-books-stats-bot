@@ -20,14 +20,14 @@ async function addBookTGController(bot, msg) {
       });
 
       bot.onReplyToMessage(msg.chat.id, bookNamePrompt.message_id, async (bookNameMsg) => {
-        const startDatePrompt = await bot.sendMessage(msg.chat.id, 'Когда начали читать (в формате 01-01-2020)', {
+        const startDatePrompt = await bot.sendMessage(msg.chat.id, 'Когда начали читать (в формате 01.01.2020)', {
           reply_markup: {
             force_reply: true,
           }
         });
 
         bot.onReplyToMessage(msg.chat.id, startDatePrompt.message_id, async (startDateMsg) => {
-          const endDatePrompt = await bot.sendMessage(msg.chat.id, 'Когда закончили читать (в формате 01-01-2020)', {
+          const endDatePrompt = await bot.sendMessage(msg.chat.id, 'Когда закончили читать (в формате 01.01.2020)', {
             reply_markup: {
               force_reply: true,
             }

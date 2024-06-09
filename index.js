@@ -6,6 +6,7 @@ const app = express();
 const db = require('./db');
 const addBookTGController = require('./tg-controllers/add-book-tg-controller');
 const searchBookTGController = require('./tg-controllers/search-book-tg-controller');
+const BookController = require('./controllers/book-controller');
 const { getBookIdFromString } = require('./helpers');
 
 const createTableBooksQuery = `
@@ -78,17 +79,41 @@ bot.onText(/.*\[[\0-9]*\]$/, async (msg) => {
   const bookId = getBookIdFromString(msg.text);
   console.log(bookId);
 
+  // TODO: make Error helper with message about error
+  // if (!bookId) {error}
+
+  const bookItem = await BookController.getBookById(bookId);
+
+  // TODO: if (!bookItem) {error}
+
   await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
     reply_markup: {
         keyboard: [
-            ['⭐️ Картинка', '⭐️ Видео'],
-            ['⭐️ Аудио', '⭐️ Голосовое сообщение'],
-            [{text: '⭐️ Контакт', bookId: 123}, '⭐️ Геолокация'],
-            ['❌ Закрыть меню']
+            [`Автор: ${bookItem.author}`],
+            [`Наименование: ${bookItem.title}`],
+            [`Когда начали: ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'}`],
+            [`Когда закончили: ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'}`],
+            [`Страниц в книг: ${bookItem.pages_amount}`, `Рейтинг: ${bookItem.rating}`],
+            [`Ревью: ${bookItem.review}`],
+            ['Закрыть меню'],
         ],
         resize_keyboard: true
     }
-})
+  })
+});
+
+bot.onText(/Закрыть меню/, async (msg) => {
+  console.log('edit book naming');
+
+  await bot.sendMessage(msg.chat.id, 'Меню закрыто', {
+    reply_markup: {
+      remove_keyboard: true,
+    }
+  });
+});
+
+bot.onText(/Наименование/, async (msg) => {
+  console.log('edit book naming');
 });
 
 bot.on("polling_error", err => console.log(err.data.error.message));

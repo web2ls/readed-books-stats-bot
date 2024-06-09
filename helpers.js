@@ -41,7 +41,7 @@ function getBookIdFromString(value) {
   const textAsArray = value.split(' ');
   const lastEl = textAsArray[textAsArray.length - 1];
   const id = lastEl.slice(1, lastEl.length - 1);
-  return id;
+  return isNaN(id) ? null : Number(id);
 }
 
 module.exports = {
