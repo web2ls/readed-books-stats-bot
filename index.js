@@ -74,10 +74,12 @@ bot.onText(/\/add/, addBookTGController.bind(this, bot));
 bot.onText(/\/find/, searchBookTGController.bind(this, bot));
 
 bot.onText(/^(Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[0-9]*\]$/, async (msg) => {
-  console.log('readu for edit author fields');
+  console.log('ready for edit author fields');
+  const bookId = getBookIdFromString(msg.text);
+  console.log(bookId);
 });
 
-bot.onText(/.*(:).*\[[\0-9]*\]$/, async (msg) => {
+bot.onText(/^(?!Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[\0-9]*\]$/, async (msg) => {
   console.log(msg.text);
   console.log(msg);
   const bookId = getBookIdFromString(msg.text);
@@ -91,15 +93,15 @@ bot.onText(/.*(:).*\[[\0-9]*\]$/, async (msg) => {
   // TODO: if (!bookItem) {error}
 
   // Автор|Наименование|Начали|Закончили|Страниц|Рейтинг|Обзор
-  const fieldBookForEditPrompt = await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
+  await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
     reply_markup: {
         keyboard: [
-            [`Автор ${bookItem.author} [${bookItem.id}]`],
-            [`Наименование ${bookItem.title} [${bookItem.id}]`],
-            [`Начали ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'} [${bookItem.id}]`],
-            [`Закончили ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'} [${bookItem.id}]`],
-            [`Страницы ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг ${bookItem.rating} [${bookItem.id}]`],
-            [`Обзор ${bookItem.review} [${bookItem.id}]`],
+            [`Автор: ${bookItem.author} [${bookItem.id}]`],
+            [`Наименование: ${bookItem.title} [${bookItem.id}]`],
+            [`Начали: ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'} [${bookItem.id}]`],
+            [`Закончили: ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'} [${bookItem.id}]`],
+            [`Страницы: ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг: ${bookItem.rating} [${bookItem.id}]`],
+            [`Обзор: ${bookItem.review} [${bookItem.id}]`],
             ['Закрыть меню'],
         ],
         resize_keyboard: true,
