@@ -54,6 +54,10 @@ const commands = [
   {
     command: "find",
     description: 'Найти книгу'
+  },
+  {
+    command: "stats",
+    description: 'Статистика'
   }
 ]
 
@@ -72,6 +76,33 @@ bot.onText(/\/start/, async (msg) => {
 bot.onText(/\/add/, addBookTGController.bind(this, bot));
 
 bot.onText(/\/find/, searchBookTGController.bind(this, bot));
+
+bot.onText(/stats/, async (msg) => {
+  await bot.sendMessage(msg.chat.id, 'Выберите период', {
+    reply_markup: {
+      keyboard: [
+        ['Прочитано за месяц', 'Прочитано за год'],
+        ['Закрыть меню'],
+    ],
+    resize_keyboard: true,
+    }
+  });
+});
+
+bot.onText(/Прочитано за месяц/, async (msg) => {
+  const query = `
+    SELECT title FROM books WHERE finished_at = 1728158400000
+  `
+
+  db.all(query, (error, rows) => {
+    if (error) {
+      console.log('Failed to get books on current month', error.message);
+    } else {
+      console.log('Books on this month finded');
+      console.log(rows);
+    }
+  })
+});
 
 bot.onText(/^(Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[0-9]*\]$/, async (msg) => {
   console.log('ready for edit author fields');
@@ -152,10 +183,6 @@ bot.onText(/Закрыть меню/, async (msg) => {
     }
   });
 });
-
-// bot.onText(/Наименование/, async (msg) => {
-//   console.log('edit book naming');
-// });
 
 bot.on("polling_error", err => console.log(err.data.error.message));
 
