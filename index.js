@@ -4,10 +4,13 @@ const express = require('express');
 const app = express();
 
 const db = require('./db');
+const COMMANDS = require('./commands');
 const addBookTGController = require('./tg-controllers/add-book-tg-controller');
 const searchBookTGController = require('./tg-controllers/search-book-tg-controller');
 const BookController = require('./controllers/book-controller');
+const MenuTgController = require('./tg-controllers/menu-tg-controller');
 const { getBookIdFromString } = require('./helpers');
+const editBookHandler = require('./tg-event-handlers/edit-book-handler');
 
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
@@ -33,35 +36,12 @@ db.serialize(() => {
   })
 });
 
-db.all('SELECT * FROM books', (err, rows) => {
-  if (err) {
-    console.error('Error fetching data:', err.message);
-  } else {
-    console.log('Fetched data:', rows);
-  }
-});
-
 const PORT = process.env.PORT;
 const TOKEN = process.env.BOT_TOKEN;
 
 const bot = new TelegramBot(TOKEN, {polling: true});
 
-const commands = [
-  {
-      command: 'add',
-      description: 'Добавить книгу'
-  },
-  {
-    command: "find",
-    description: 'Найти книгу'
-  },
-  {
-    command: "stats",
-    description: 'Статистика'
-  }
-]
-
-bot.setMyCommands(commands);
+bot.setMyCommands(COMMANDS);
 
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
@@ -104,43 +84,7 @@ bot.onText(/Прочитано за месяц/, async (msg) => {
   })
 });
 
-bot.onText(/^(Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[0-9]*\]$/, async (msg) => {
-  console.log('ready for edit author fields');
-  const bookId = getBookIdFromString(msg.text);
-  console.log(bookId);
-
-  const newValuePrompt = await bot.sendMessage(msg.chat.id, 'Новое значение:', {
-    reply_markup: {
-      force_reply: true,
-    }
-  });
-
-  bot.onReplyToMessage(msg.chat.id, newValuePrompt.message_id, async (newValueMsg) => {
-    console.log(newValueMsg);
-    console.log(newValueMsg.text);
-
-    await BookController.update(bookId, newValueMsg.text, msg.text);
-
-    const bookItem = await BookController.getBookById(bookId);
-
-    await bot.sendMessage(msg.chat.id, 'Книга обновлена');
-
-    await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
-      reply_markup: {
-          keyboard: [
-              [`Автор: ${bookItem.author} [${bookItem.id}]`],
-              [`Наименование: ${bookItem.title} [${bookItem.id}]`],
-              [`Начали: ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'} [${bookItem.id}]`],
-              [`Закончили: ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'} [${bookItem.id}]`],
-              [`Страницы: ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг: ${bookItem.rating} [${bookItem.id}]`],
-              [`Обзор: ${bookItem.review} [${bookItem.id}]`],
-              ['Закрыть меню'],
-          ],
-          resize_keyboard: true,
-      }
-    })
-  });
-});
+bot.onText(/^(Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[0-9]*\]$/, editBookHandler.bind(this, bot));
 
 bot.onText(/^(?!Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[\0-9]*\]$/, async (msg) => {
   console.log(msg.text);
@@ -176,13 +120,7 @@ bot.onText(/^(?!Автор|Наименование|Начали|Закончи�
   })
 });
 
-bot.onText(/Закрыть меню/, async (msg) => {
-  await bot.sendMessage(msg.chat.id, 'Меню закрыто', {
-    reply_markup: {
-      remove_keyboard: true,
-    }
-  });
-});
+bot.onText(/^Закрыть меню$/, MenuTgController.closeMenu.bind(this, bot));
 
 bot.on("polling_error", err => console.log(err.data.error.message));
 
