@@ -4,7 +4,10 @@ const {
   getValidatedDate,
   getValidatedPagesAmount,
   getValidatedRating,
-  getValidatedText
+  getValidatedText,
+  detectBookFieldForUpdate,
+  BOOK_FIELDS_MAPPING,
+  BOOK_FIELD_VALIDATOR,
 } = require('../helpers');
 
 BookController = {
@@ -71,6 +74,33 @@ BookController = {
           resolve(buttons);
         }
       });
+    })
+  },
+
+  update: async (bookId, newValue, sourceFieldMessage) => {
+    const originalFieldName = detectBookFieldForUpdate(sourceFieldMessage);
+    const fieldName = BOOK_FIELDS_MAPPING[originalFieldName];
+    const validator = BOOK_FIELD_VALIDATOR[fieldName];
+    const validatedValue = validator(newValue);
+
+    return BookController.updateBook(bookId, fieldName, validatedValue);
+  },
+
+  updateBook: (id, field, value) => {
+    return new Promise((resolve, reject) => {
+      const updateBookQuery = `
+        UPDATE books SET ${field} = '${value}' WHERE id = '${id}'
+      `;
+
+      db.run(updateBookQuery, (error) => {
+        if (error) {
+          console.log('Failed to update book', error.message);
+          reject();
+        } else {
+          console.log('Book has been updated');
+          resolve();
+        }
+      })
     })
   }
 }

@@ -77,6 +77,38 @@ bot.onText(/^(Автор|Наименование|Начали|Закончил�
   console.log('ready for edit author fields');
   const bookId = getBookIdFromString(msg.text);
   console.log(bookId);
+
+  const newValuePrompt = await bot.sendMessage(msg.chat.id, 'Новое значение:', {
+    reply_markup: {
+      force_reply: true,
+    }
+  });
+
+  bot.onReplyToMessage(msg.chat.id, newValuePrompt.message_id, async (newValueMsg) => {
+    console.log(newValueMsg);
+    console.log(newValueMsg.text);
+
+    await BookController.update(bookId, newValueMsg.text, msg.text);
+
+    const bookItem = await BookController.getBookById(bookId);
+
+    await bot.sendMessage(msg.chat.id, 'Книга обновлена');
+
+    await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
+      reply_markup: {
+          keyboard: [
+              [`Автор: ${bookItem.author} [${bookItem.id}]`],
+              [`Наименование: ${bookItem.title} [${bookItem.id}]`],
+              [`Начали: ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'} [${bookItem.id}]`],
+              [`Закончили: ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'} [${bookItem.id}]`],
+              [`Страницы: ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг: ${bookItem.rating} [${bookItem.id}]`],
+              [`Обзор: ${bookItem.review} [${bookItem.id}]`],
+              ['Закрыть меню'],
+          ],
+          resize_keyboard: true,
+      }
+    })
+  });
 });
 
 bot.onText(/^(?!Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[\0-9]*\]$/, async (msg) => {
@@ -89,6 +121,10 @@ bot.onText(/^(?!Автор|Наименование|Начали|Закончи�
   // if (!bookId) {error}
 
   const bookItem = await BookController.getBookById(bookId);
+
+  if (!bookItem) {
+    return;
+  }
 
   // TODO: if (!bookItem) {error}
 
