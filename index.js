@@ -8,9 +8,9 @@ const COMMANDS = require('./commands');
 const addBookTGController = require('./tg-controllers/add-book-tg-controller');
 const searchBookTGController = require('./tg-controllers/search-book-tg-controller');
 const BookController = require('./controllers/book-controller');
-const MenuTgController = require('./tg-controllers/menu-tg-controller');
-const { getBookIdFromString } = require('./helpers');
 const editBookHandler = require('./tg-event-handlers/edit-book-handler');
+const selectBookForEditHandler = require('./tg-event-handlers/select-book-for-edit-handler');
+const { closeMenu, openEditableFieldsMenu } = require('./tg-event-handlers/menu-handler');
 
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
@@ -86,41 +86,9 @@ bot.onText(/Прочитано за месяц/, async (msg) => {
 
 bot.onText(/^(Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[0-9]*\]$/, editBookHandler.bind(this, bot));
 
-bot.onText(/^(?!Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[\0-9]*\]$/, async (msg) => {
-  console.log(msg.text);
-  console.log(msg);
-  const bookId = getBookIdFromString(msg.text);
-  console.log(bookId);
+bot.onText(/^(?!Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[\0-9]*\]$/, selectBookForEditHandler.bind(this, bot));
 
-  // TODO: make Error helper with message about error
-  // if (!bookId) {error}
-
-  const bookItem = await BookController.getBookById(bookId);
-
-  if (!bookItem) {
-    return;
-  }
-
-  // TODO: if (!bookItem) {error}
-
-  // Автор|Наименование|Начали|Закончили|Страниц|Рейтинг|Обзор
-  await bot.sendMessage(msg.chat.id, 'Выберите, что вы хотите отредактировать', {
-    reply_markup: {
-        keyboard: [
-            [`Автор: ${bookItem.author} [${bookItem.id}]`],
-            [`Наименование: ${bookItem.title} [${bookItem.id}]`],
-            [`Начали: ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'} [${bookItem.id}]`],
-            [`Закончили: ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'} [${bookItem.id}]`],
-            [`Страницы: ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг: ${bookItem.rating} [${bookItem.id}]`],
-            [`Обзор: ${bookItem.review} [${bookItem.id}]`],
-            ['Закрыть меню'],
-        ],
-        resize_keyboard: true,
-    }
-  })
-});
-
-bot.onText(/^Закрыть меню$/, MenuTgController.closeMenu.bind(this, bot));
+bot.onText(/^Закрыть меню$/, closeMenu.bind(this, bot));
 
 bot.on("polling_error", err => console.log(err.data.error.message));
 

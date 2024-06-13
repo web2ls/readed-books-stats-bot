@@ -63,7 +63,7 @@ function getValidatedText(input) {
   return value.trim();
 }
 
-function getBookIdFromString(value) {
+function getBookIdFromMessage(value) {
   const textAsArray = value.split(' ');
   const lastEl = textAsArray[textAsArray.length - 1];
   const id = lastEl.slice(1, lastEl.length - 1);
@@ -75,7 +75,7 @@ module.exports = {
   getValidatedPagesAmount,
   getValidatedRating,
   getValidatedText,
-  getBookIdFromString,
+  getBookIdFromMessage,
   BOOK_FIELDS_MAPPING,
   BOOK_FIELD_VALIDATOR,
   detectBookFieldForUpdate,
