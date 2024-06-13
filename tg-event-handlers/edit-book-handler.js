@@ -1,7 +1,7 @@
-const { getBookIdFromMessage } = require('../helpers');
 const errorHandler = require('./error-handler');
 const BookController = require('../controllers/book-controller');
 const { openEditableFieldsMenu } = require('./menu-handler');
+const { getBookIdFromMessage } = require('../helpers');
 
 async function editBookHandler(bot, msg) {
   try {

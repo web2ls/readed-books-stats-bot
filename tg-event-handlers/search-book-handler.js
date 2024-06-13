@@ -1,6 +1,7 @@
 const BookController = require('../controllers/book-controller');
+const errorHandler = require('./error-handler');
 
-async function searchBookTGController(bot, msg) {
+async function searchBookHandler(bot, msg) {
   try {
     await bot.sendMessage(msg.chat.id, `
       Поиск будет осуществляться по имени автора и наименованию книги. Будут выведены 5 подходящих вариантов.
@@ -27,11 +28,8 @@ async function searchBookTGController(bot, msg) {
       })
     })
   } catch(error) {
-    console.log('Failed to search books', error.message);
-    await bot.sendMessage(msg.chat.id, `
-      Что-то пошло не так... Попробуйте повторить процесс позже.
-    `);
+    errorHandler(msg.chat.id, bot, error);
   }
 }
 
-module.exports = searchBookTGController;
+module.exports = searchBookHandler;

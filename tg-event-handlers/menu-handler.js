@@ -1,4 +1,5 @@
 async function closeMenu(bot, msgId) {
+  console.log('message id on close menu is');
   await bot.sendMessage(msgId, 'Меню закрыто', {
     reply_markup: {
       remove_keyboard: true,

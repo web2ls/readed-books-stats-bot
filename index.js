@@ -6,11 +6,10 @@ const app = express();
 const db = require('./db');
 const COMMANDS = require('./commands');
 const addBookTGController = require('./tg-controllers/add-book-tg-controller');
-const searchBookTGController = require('./tg-controllers/search-book-tg-controller');
-const BookController = require('./controllers/book-controller');
+const searchBookHandler = require('./tg-event-handlers/search-book-handler');
 const editBookHandler = require('./tg-event-handlers/edit-book-handler');
 const selectBookForEditHandler = require('./tg-event-handlers/select-book-for-edit-handler');
-const { closeMenu, openEditableFieldsMenu } = require('./tg-event-handlers/menu-handler');
+const { closeMenu } = require('./tg-event-handlers/menu-handler');
 
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
@@ -55,7 +54,7 @@ bot.onText(/\/start/, async (msg) => {
 
 bot.onText(/\/add/, addBookTGController.bind(this, bot));
 
-bot.onText(/\/find/, searchBookTGController.bind(this, bot));
+bot.onText(/\/find/, searchBookHandler.bind(this, bot));
 
 bot.onText(/stats/, async (msg) => {
   await bot.sendMessage(msg.chat.id, 'Выберите период', {
@@ -88,6 +87,7 @@ bot.onText(/^(Автор|Наименование|Начали|Закончил�
 
 bot.onText(/^(?!Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[\0-9]*\]$/, selectBookForEditHandler.bind(this, bot));
 
+// FIXME: fatal error with messageid here
 bot.onText(/^Закрыть меню$/, closeMenu.bind(this, bot));
 
 bot.on("polling_error", err => console.log(err.data.error.message));
