@@ -1,6 +1,7 @@
 const BookController = require('../controllers/book-controller');
+const errorHandler = require('./error-handler');
 
-async function addBookTGController(bot, msg) {
+async function addBookHandler(bot, msg) {
   try {
     await bot.sendMessage(msg.chat.id, `
       Необходимо заполнить информацию о книге. В те поля, которые вы пропускаете ставьте прочерк '-'. В случае ошибочного заполнения - будет сохранено значение по-умолчанию. Исправить ошибку можно будет при редактировании информации.
@@ -80,10 +81,8 @@ async function addBookTGController(bot, msg) {
     })
   } catch {
     bot.clearReplyListeners();
-    await bot.sendMessage(msg.chat.id, `
-      Что-то пошло не так... Попробуйте повторить процесс позже.
-    `);
+    await errorHandler(msg.chat.id, bot, { message: 'Failed to add book' });
   }
 }
 
-module.exports = addBookTGController;
+module.exports = addBookHandler;

@@ -7,16 +7,17 @@ async function selectBookForEditHandler(bot, msg) {
   try {
     const bookId = getBookIdFromMessage(msg.text);
 
-    // TODO: make Error helper with message about error
-    // if (!bookId) {error}
+    if (!bookId) {
+      await errorHandler(msg.chat.id, bot, { message: 'Failed to get bookId' });
+      return;
+    }
 
     const bookItem = await BookController.getBookById(bookId);
 
     if (!bookItem) {
+      await errorHandler(msg.chat.id, bot, { message: 'Failed to get bookItem' });
       return;
     }
-
-    // TODO: if (!bookItem) {error}
 
     await openEditableFieldsMenu(bot, msg.chat.id, bookItem);
   } catch(error) {
