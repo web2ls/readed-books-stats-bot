@@ -1,7 +1,5 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
-const express = require('express');
-const app = express();
 
 const db = require('./db');
 const COMMANDS = require('./commands');
@@ -35,11 +33,8 @@ db.serialize(() => {
   })
 });
 
-const PORT = process.env.PORT;
 const TOKEN = process.env.BOT_TOKEN;
-
 const bot = new TelegramBot(TOKEN, {polling: true});
-
 bot.setMyCommands(COMMANDS);
 
 bot.onText(/\/start/, async (msg) => {
@@ -90,7 +85,3 @@ bot.onText(/^(?!Автор|Наименование|Начали|Закончи�
 bot.onText(/^Закрыть меню$/, closeMenu.bind(this, bot));
 
 bot.on("polling_error", err => console.log(err.data.error.message));
-
-app.listen(PORT, () => {
-  console.log('Server has been started...');
-})

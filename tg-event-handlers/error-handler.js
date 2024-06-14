@@ -1,5 +1,4 @@
-async function errorHandler(msgId, bot, error) {
-  console.error(error.message);
+async function errorHandler(msgId, bot) {
   await bot.sendMessage(msgId, `
     Что-то пошло не так... Попробуйте повторить процесс позже.
   `, {

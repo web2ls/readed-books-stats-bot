@@ -6,7 +6,6 @@ async function closeMenu(bot, msg) {
   });
 };
 
-// TODO: apply try catch
 async function openEditableFieldsMenu(bot, msgId, bookItem) {
   await bot.sendMessage(msgId, 'Выберите, что вы хотите отредактировать', {
     reply_markup: {

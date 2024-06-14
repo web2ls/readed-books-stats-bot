@@ -11,7 +11,6 @@ async function editBookHandler(bot, msg) {
       }
     });
 
-    // TODO: move to menu-tg-controller
     bot.onReplyToMessage(msg.chat.id, newValuePrompt.message_id, async (newValueMsg) => {
       const bookId = getBookIdFromMessage(msg.text);
       await BookController.update(bookId, newValueMsg.text, msg.text);
