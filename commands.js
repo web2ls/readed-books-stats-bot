@@ -8,8 +8,8 @@ const COMMANDS = [
     description: 'Найти книгу'
   },
   {
-    command: "stats",
-    description: 'Статистика'
+    command: "quickstats",
+    description: 'Текущая статистика'
   }
 ];
 

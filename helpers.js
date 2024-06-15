@@ -24,8 +24,6 @@ function detectBookFieldForUpdate(value) {
   return value.split(':')[0];
 }
 
-// Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор
-
 function sanitizeValue(value) {
   return validator.escape(value);
 }
@@ -36,8 +34,13 @@ function getValidatedDate(input) {
     return null;
   }
 
-  const date = new Date(value).getTime();
-  return isNaN(date) ? null : date;
+  const dateList = value.split('.');
+  console.log('current splitted date is', dateList);
+  if (dateList.length !== 3 || isNaN(dateList[0]) || isNaN(dateList[1]) || isNaN(dateList[2]) || dateList[2].length !== 4) {
+    return null;
+  }
+
+  return new Date(dateList[2], dateList[1] - 1, dateList[0] + 1).toISOString();
 }
 
 function getValidatedPagesAmount(input) {

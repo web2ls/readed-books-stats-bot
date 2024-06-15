@@ -13,10 +13,10 @@ const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
     id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    author TEXT NOT NULL,
-    title TEXT NOT NULL,
-    started_at INTEGER,
-    finished_at INTEGER,
+    author VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    started_at VARCHAR(255),
+    finished_at VARCHAR(255),
     pages_amount INTEGER NOT NULL,
     rating INTEGER NOT NULL,
     review TEXT NOT NULL
@@ -51,11 +51,11 @@ bot.onText(/\/add/, addBookHandler.bind(this, bot));
 
 bot.onText(/\/find/, searchBookHandler.bind(this, bot));
 
-bot.onText(/stats/, async (msg) => {
+bot.onText(/quickstats/, async (msg) => {
   await bot.sendMessage(msg.chat.id, 'Выберите период', {
     reply_markup: {
       keyboard: [
-        ['Прочитано за месяц', 'Прочитано за год'],
+        ['Количество за месяц', 'Количество за год'],
         ['Закрыть меню'],
     ],
     resize_keyboard: true,
@@ -63,9 +63,10 @@ bot.onText(/stats/, async (msg) => {
   });
 });
 
-bot.onText(/Прочитано за месяц/, async (msg) => {
+bot.onText(/Количество за месяц/, async (msg) => {
+
   const query = `
-    SELECT title FROM books WHERE finished_at = 1728158400000
+    SELECT * FROM books;
   `
 
   db.all(query, (error, rows) => {

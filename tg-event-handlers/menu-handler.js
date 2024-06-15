@@ -12,8 +12,8 @@ async function openEditableFieldsMenu(bot, msgId, bookItem) {
         keyboard: [
             [`Автор: ${bookItem.author} [${bookItem.id}]`],
             [`Наименование: ${bookItem.title} [${bookItem.id}]`],
-            [`Начали: ${bookItem.started_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.started_at) : '-'} [${bookItem.id}]`],
-            [`Закончили: ${bookItem.finished_at !== 'null' ? new Intl.DateTimeFormat('ru-RU').format(bookItem.finished_at) : '-'} [${bookItem.id}]`],
+            [`Начали: ${bookItem.started_at !== 'null' ? new Date(bookItem.started_at).toLocaleDateString('ru') : '-'} [${bookItem.id}]`],
+            [`Закончили: ${bookItem.finished_at !== 'null' ? new Date(bookItem.finished_at).toLocaleDateString('ru') : '-'} [${bookItem.id}]`],
             [`Страницы: ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг: ${bookItem.rating} [${bookItem.id}]`],
             [`Обзор: ${bookItem.review} [${bookItem.id}]`],
             ['Закрыть меню'],
