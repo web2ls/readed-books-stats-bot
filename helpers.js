@@ -34,13 +34,11 @@ function getValidatedDate(input) {
     return null;
   }
 
-  const dateList = value.split('.');
-  console.log('current splitted date is', dateList);
   if (dateList.length !== 3 || isNaN(dateList[0]) || isNaN(dateList[1]) || isNaN(dateList[2]) || dateList[2].length !== 4) {
     return null;
   }
 
-  return new Date(dateList[2], dateList[1] - 1, dateList[0] + 1).toISOString();
+  return new Date(Number(dateList[2]), Number(dateList[1]) - 1, Number(dateList[0]) + 1, 0, 0, 0).toISOString();
 }
 
 function getValidatedPagesAmount(input) {

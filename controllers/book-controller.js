@@ -42,8 +42,10 @@ BookController = {
         review: getValidatedText(value.review),
       }
 
+      console.log(newBook.startedAt);
+
       const insertNewBookQuery = `
-        INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', '${newBook.startedAt ? newBook.startedAt : NULL}', '${newBook.finishedAt}', '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
+        INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.startedAt ? newBook.startedAt : NULL}'), unixepoch('${newBook.finishedAt}'), '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
       `;
 
       db.run(insertNewBookQuery, (error) => {

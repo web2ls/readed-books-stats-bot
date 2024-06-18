@@ -15,8 +15,8 @@ const createTableBooksQuery = `
     user_id INTEGER NOT NULL,
     author VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
-    started_at VARCHAR(255),
-    finished_at VARCHAR(255),
+    started_at INTEGER,
+    finished_at INTEGER,
     pages_amount INTEGER NOT NULL,
     rating INTEGER NOT NULL,
     review TEXT NOT NULL
