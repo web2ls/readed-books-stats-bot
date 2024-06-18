@@ -64,10 +64,13 @@ bot.onText(/quickstats/, async (msg) => {
 });
 
 bot.onText(/Количество за месяц/, async (msg) => {
+  const currentMonth = new Date().getMonth() + 1;
+  const currentMonthAsString = String(currentMonth).padStart(2, '0');
+  const currentYear = new Date().getFullYear();
 
   const query = `
-    SELECT * FROM books;
-  `
+    SELECT id FROM books WHERE strftime('%m', datetime(finished_at, 'unixepoch')) = '${currentMonthAsString}' AND strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}';
+  `;
 
   db.all(query, (error, rows) => {
     if (error) {

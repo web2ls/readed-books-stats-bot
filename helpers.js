@@ -34,6 +34,8 @@ function getValidatedDate(input) {
     return null;
   }
 
+  const dateList = value.split('.');
+
   if (dateList.length !== 3 || isNaN(dateList[0]) || isNaN(dateList[1]) || isNaN(dateList[2]) || dateList[2].length !== 4) {
     return null;
   }
