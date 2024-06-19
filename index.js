@@ -7,7 +7,9 @@ const addBookHandler = require('./tg-event-handlers/add-book-handler');
 const searchBookHandler = require('./tg-event-handlers/search-book-handler');
 const editBookHandler = require('./tg-event-handlers/edit-book-handler');
 const selectBookForEditHandler = require('./tg-event-handlers/select-book-for-edit-handler');
-const { closeMenu } = require('./tg-event-handlers/menu-handler');
+const getAmountByCurrentMonthHandler = require('./tg-event-handlers/get-amount-by-current-month-handler');
+const getAmountByCurrentYearHandler = require('./tg-event-handlers/get-amount-by-current-year-handler');
+const { closeMenu, openQuickStatsMenu } = require('./tg-event-handlers/menu-handler');
 
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
@@ -51,36 +53,11 @@ bot.onText(/\/add/, addBookHandler.bind(this, bot));
 
 bot.onText(/\/find/, searchBookHandler.bind(this, bot));
 
-bot.onText(/quickstats/, async (msg) => {
-  await bot.sendMessage(msg.chat.id, 'Выберите период', {
-    reply_markup: {
-      keyboard: [
-        ['Количество за месяц', 'Количество за год'],
-        ['Закрыть меню'],
-    ],
-    resize_keyboard: true,
-    }
-  });
-});
+bot.onText(/quickstats/, openQuickStatsMenu.bind(this, bot));
 
-bot.onText(/Количество за месяц/, async (msg) => {
-  const currentMonth = new Date().getMonth() + 1;
-  const currentMonthAsString = String(currentMonth).padStart(2, '0');
-  const currentYear = new Date().getFullYear();
+bot.onText(/^Количество за месяц$/, getAmountByCurrentMonthHandler.bind(this, bot));
 
-  const query = `
-    SELECT id FROM books WHERE strftime('%m', datetime(finished_at, 'unixepoch')) = '${currentMonthAsString}' AND strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}';
-  `;
-
-  db.all(query, (error, rows) => {
-    if (error) {
-      console.log('Failed to get books on current month', error.message);
-    } else {
-      console.log('Books on this month finded');
-      console.log(rows);
-    }
-  })
-});
+bot.onText(/^Количество за год$/, getAmountByCurrentYearHandler.bind(this, bot));
 
 bot.onText(/^(Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[0-9]*\]$/, editBookHandler.bind(this, bot));
 

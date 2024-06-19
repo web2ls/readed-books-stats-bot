@@ -42,8 +42,6 @@ BookController = {
         review: getValidatedText(value.review),
       }
 
-      console.log(newBook.startedAt);
-
       const insertNewBookQuery = `
         INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.startedAt ? newBook.startedAt : null}'), unixepoch('${newBook.finishedAt ? newBook.finishedAt : null}'), '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
       `;
@@ -104,7 +102,51 @@ BookController = {
         }
       })
     })
-  }
+  },
+
+  getBooksAmountByCurrentMonth: () => {
+    return new Promise((resolve, reject) => {
+      const currentMonth = new Date().getMonth() + 1;
+      const currentMonthAsString = String(currentMonth).padStart(2, '0');
+      const currentYear = new Date().getFullYear();
+
+      const query = `
+        SELECT COUNT(*) as amount FROM books WHERE strftime('%m', datetime(finished_at, 'unixepoch')) = '${currentMonthAsString}' AND strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}';
+      `;
+
+      db.get(query, (error, row) => {
+        if (error) {
+          console.log('Failed to get books for current month', error.message);
+          reject();
+        } else {
+          console.log('Books for this month finded');
+          console.log(row);
+          resolve(row);
+        }
+      })
+    })
+  },
+
+  getBooksAmountByCurrentYear: () => {
+    return new Promise((resolve, reject) => {
+      const currentYear = new Date().getFullYear();
+
+      const query = `
+        SELECT COUNT(*) as amount FROM books WHERE strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}';
+      `;
+
+      db.get(query, (error, row) => {
+        if (error) {
+          console.log('Failed to get books for current month', error.message);
+          reject();
+        } else {
+          console.log('Books for this month finded');
+          console.log(row);
+          resolve(row);
+        }
+      })
+    })
+  },
 }
 
 module.exports = BookController;

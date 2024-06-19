@@ -23,7 +23,20 @@ async function openEditableFieldsMenu(bot, msgId, bookItem) {
   })
 };
 
+async function openQuickStatsMenu(bot, msg) {
+  await bot.sendMessage(msg.chat.id, 'Выберите период', {
+    reply_markup: {
+      keyboard: [
+        ['Количество за месяц', 'Количество за год'],
+        ['Закрыть меню'],
+    ],
+    resize_keyboard: true,
+    }
+  });
+}
+
 module.exports = {
   closeMenu,
   openEditableFieldsMenu,
+  openQuickStatsMenu,
 };
