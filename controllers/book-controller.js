@@ -13,11 +13,11 @@ const {
 BookController = {
   getBookById: (id) => {
     return new Promise((resolve, reject) => {
-      const getBookByIdQuery = `
+      const query = `
         SELECT * FROM books WHERE id = ${id}
       `;
 
-      db.get(getBookByIdQuery, (error, row) => {
+      db.get(query, (error, row) => {
         if (error) {
           console.log('Failed to get book by id', error);
           reject();
@@ -42,11 +42,11 @@ BookController = {
         review: getValidatedText(value.review),
       }
 
-      const insertNewBookQuery = `
+      const query = `
         INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.startedAt ? newBook.startedAt : null}'), unixepoch('${newBook.finishedAt ? newBook.finishedAt : null}'), '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
       `;
 
-      db.run(insertNewBookQuery, (error) => {
+      db.run(query, (error) => {
         if (error) {
           console.log('Failed to insert new book', error.message);
           reject();
@@ -58,10 +58,10 @@ BookController = {
     })
   },
 
-  searchBook: (query) => {
+  searchBook: (query, userId) => {
     return new Promise((resolve, reject) => {
       const searchBooksQuery = `
-        SELECT * FROM books WHERE author LIKE '%${query}%' OR title LIKE '%${query}%' LIMIT 5
+        SELECT * FROM books WHERE user_id = ${userId} AND (author LIKE '%${query}%' OR title LIKE '%${query}%') LIMIT 5
       `;
 
       db.all(searchBooksQuery, (err, rows) => {
@@ -88,11 +88,11 @@ BookController = {
 
   updateBook: (id, field, value) => {
     return new Promise((resolve, reject) => {
-      const updateBookQuery = `
+      const query = `
         UPDATE books SET ${field} = '${value}' WHERE id = '${id}'
       `;
 
-      db.run(updateBookQuery, (error) => {
+      db.run(query, (error) => {
         if (error) {
           console.log('Failed to update book', error.message);
           reject();
@@ -104,14 +104,14 @@ BookController = {
     })
   },
 
-  getBooksAmountByCurrentMonth: () => {
+  getBooksAmountByCurrentMonth: (userId) => {
     return new Promise((resolve, reject) => {
       const currentMonth = new Date().getMonth() + 1;
       const currentMonthAsString = String(currentMonth).padStart(2, '0');
       const currentYear = new Date().getFullYear();
 
       const query = `
-        SELECT COUNT(*) as amount FROM books WHERE strftime('%m', datetime(finished_at, 'unixepoch')) = '${currentMonthAsString}' AND strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}';
+        SELECT COUNT(*) as amount FROM books WHERE strftime('%m', datetime(finished_at, 'unixepoch')) = '${currentMonthAsString}' AND strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}' AND user_id = ${userId};
       `;
 
       db.get(query, (error, row) => {
@@ -120,19 +120,18 @@ BookController = {
           reject();
         } else {
           console.log('Books for this month finded');
-          console.log(row);
           resolve(row);
         }
       })
     })
   },
 
-  getBooksAmountByCurrentYear: () => {
+  getBooksAmountByCurrentYear: (userId) => {
     return new Promise((resolve, reject) => {
       const currentYear = new Date().getFullYear();
 
       const query = `
-        SELECT COUNT(*) as amount FROM books WHERE strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}';
+        SELECT COUNT(*) as amount FROM books WHERE strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}' AND user_id = ${userId};
       `;
 
       db.get(query, (error, row) => {
@@ -141,7 +140,6 @@ BookController = {
           reject();
         } else {
           console.log('Books for this month finded');
-          console.log(row);
           resolve(row);
         }
       })

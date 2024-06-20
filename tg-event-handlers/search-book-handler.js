@@ -13,8 +13,11 @@ async function searchBookHandler(bot, msg) {
       }
     });
 
+    console.log(msg);
+
+    // TODO: separate all queries by user id
     bot.onReplyToMessage(msg.chat.id, searchQueryPrompt.message_id, async (searchQueryMsg) => {
-      const searchedBooks = await BookController.searchBook(searchQueryMsg.text);
+      const searchedBooks = await BookController.searchBook(searchQueryMsg.text, msg.from.id);
 
       if (searchedBooks.length === 0) {
         await bot.sendMessage(msg.chat.id, `Книг не найдено`);

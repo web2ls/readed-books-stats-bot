@@ -3,7 +3,7 @@ const BookController = require('../controllers/book-controller');
 
 async function getAmountByCurrentYearHandler(bot, msg) {
   try {
-    const booksAmount = await BookController.getBooksAmountByCurrentYear();
+    const booksAmount = await BookController.getBooksAmountByCurrentYear(msg.from.id);
 
     await bot.sendMessage(msg.chat.id, `${ booksAmount.amount }`);
   } catch(error) {
