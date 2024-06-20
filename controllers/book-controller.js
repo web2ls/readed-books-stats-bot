@@ -14,7 +14,7 @@ BookController = {
   getBookById: (id) => {
     return new Promise((resolve, reject) => {
       const query = `
-        SELECT * FROM books WHERE id = ${id}
+        SELECT id, author, title, datetime(started_at, 'unixepoch') as started_at, datetime(finished_at, 'unixepoch') as finished_at, pages_amount, rating, review FROM books WHERE id = ${id}
       `;
 
       db.get(query, (error, row) => {
