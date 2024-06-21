@@ -43,6 +43,20 @@ function getValidatedDate(input) {
   return new Date(Number(dateList[2]), Number(dateList[1]) - 1, Number(dateList[0]) + 1, 0, 0, 0).toISOString();
 }
 
+function convertToUserFormat(date) {
+  const dateObj = new Date(date);
+
+  if (isNaN(dateObj.getDate())) {
+    return '-';
+  }
+
+  const day = dateObj.getDate();
+  const month = dateObj.getMonth();
+  const year = dateObj.getFullYear();
+
+  return `${String(day).padStart(2, '0')}.${String(month + 1).padStart(2, '0')}.${year}`;
+}
+
 function getValidatedPagesAmount(input) {
   const value = sanitizeValue(input);
   if (value === '-' || isNaN(value)) {
@@ -82,4 +96,5 @@ module.exports = {
   BOOK_FIELDS_MAPPING,
   BOOK_FIELD_VALIDATOR,
   detectBookFieldForUpdate,
+  convertToUserFormat,
 }

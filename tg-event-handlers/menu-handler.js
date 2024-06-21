@@ -1,3 +1,5 @@
+const { convertToUserFormat } = require('../helpers');
+
 async function closeMenu(bot, msg) {
   await bot.sendMessage(msg.chat.id, 'Меню закрыто', {
     reply_markup: {
@@ -12,8 +14,8 @@ async function openEditableFieldsMenu(bot, msgId, bookItem) {
         keyboard: [
             [`Автор: ${bookItem.author} [${bookItem.id}]`],
             [`Наименование: ${bookItem.title} [${bookItem.id}]`],
-            [`Начали: ${bookItem.started_at !== 'null' ? new Date(bookItem.started_at).toLocaleDateString('ru') : '-'} [${bookItem.id}]`],
-            [`Закончили: ${bookItem.finished_at !== 'null' ? new Date(bookItem.finished_at).toLocaleDateString('ru') : '-'} [${bookItem.id}]`],
+            [`Начали: ${convertToUserFormat(bookItem.started_at)} [${bookItem.id}]`],
+            [`Закончили: ${convertToUserFormat(bookItem.finished_at)} [${bookItem.id}]`],
             [`Страницы: ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг: ${bookItem.rating} [${bookItem.id}]`],
             [`Обзор: ${bookItem.review} [${bookItem.id}]`],
             ['Закрыть меню'],
