@@ -43,7 +43,7 @@ BookController = {
       }
 
       const query = `
-        INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.startedAt ? newBook.startedAt : null}'), unixepoch('${newBook.finishedAt ? newBook.finishedAt : null}'), '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
+        INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.startedAt}'), unixepoch('${newBook.finishedAt ? newBook.finishedAt : null}'), '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
       `;
 
       db.run(query, (error) => {
@@ -69,7 +69,6 @@ BookController = {
           console.error('Failed to search books by query:', err.message);
           reject();
         } else {
-          console.log('Search has been completed:', rows);
           const buttons = rows.map(book => [`${book.author}: ${book.title} [${book.id}]`]);
           resolve(buttons);
         }
@@ -88,9 +87,17 @@ BookController = {
 
   updateBook: (id, field, value) => {
     return new Promise((resolve, reject) => {
-      const query = `
-        UPDATE books SET ${field} = '${value}' WHERE id = '${id}'
-      `;
+      let query = '';
+
+      if (field === BOOK_FIELDS_MAPPING.Начали || field === BOOK_FIELDS_MAPPING.Закончили) {
+        query = `
+          UPDATE books SET ${field} = unixepoch('${value}') WHERE id = '${id}'
+        `;
+      } else {
+        query = `
+          UPDATE books SET ${field} = '${value}' WHERE id = '${id}'
+        `;
+      }
 
       db.run(query, (error) => {
         if (error) {

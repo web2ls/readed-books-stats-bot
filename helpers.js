@@ -30,7 +30,8 @@ function sanitizeValue(value) {
 
 function getValidatedDate(input) {
   const value = sanitizeValue(input);
-  if (value === '-') {
+
+  if (isNaN(new Date(value).getDate())) {
     return null;
   }
 
@@ -43,10 +44,14 @@ function getValidatedDate(input) {
   return new Date(Number(dateList[2]), Number(dateList[1]) - 1, Number(dateList[0]) + 1, 0, 0, 0).toISOString();
 }
 
-function convertToUserFormat(date) {
+function convertDateToUserFormat(date) {
   const dateObj = new Date(date);
 
   if (isNaN(dateObj.getDate())) {
+    return '-';
+  }
+
+  if (dateObj.getFullYear() === 1970) {
     return '-';
   }
 
@@ -96,5 +101,5 @@ module.exports = {
   BOOK_FIELDS_MAPPING,
   BOOK_FIELD_VALIDATOR,
   detectBookFieldForUpdate,
-  convertToUserFormat,
+  convertDateToUserFormat,
 }
