@@ -35,11 +35,15 @@ function getValidatedDate(input) {
     return null;
   }
 
+  console.log('date is valid', value);
+
   const dateList = value.split('.');
 
   if (dateList.length !== 3 || isNaN(dateList[0]) || isNaN(dateList[1]) || isNaN(dateList[2]) || dateList[2].length !== 4) {
     return null;
   }
+
+  console.log('return valid date', new Date(Number(dateList[2]), Number(dateList[1]) - 1, Number(dateList[0]) + 1, 0, 0, 0).toISOString());
 
   return new Date(Number(dateList[2]), Number(dateList[1]) - 1, Number(dateList[0]) + 1, 0, 0, 0).toISOString();
 }
