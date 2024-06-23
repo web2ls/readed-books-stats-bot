@@ -31,10 +31,6 @@ function sanitizeValue(value) {
 function getValidatedDate(input) {
   const value = sanitizeValue(input);
 
-  if (isNaN(new Date(value).getDate())) {
-    return null;
-  }
-
   console.log('date is valid', value);
 
   const dateList = value.split('.');
