@@ -11,7 +11,7 @@ async function editBookHandler(bot, msg) {
       }
     });
 
-    bot.onReplyToMessage(msg.chat.id, newValuePrompt.message_id, async (newValueMsg) => {
+    const newValuePromptListener = bot.onReplyToMessage(msg.chat.id, newValuePrompt.message_id, async (newValueMsg) => {
       const bookId = getBookIdFromMessage(msg.text);
       await BookController.update(bookId, newValueMsg.text, msg.text);
       const bookItem = await BookController.getBookById(bookId);
@@ -19,8 +19,7 @@ async function editBookHandler(bot, msg) {
 
       await openEditableFieldsMenu(bot, msg.chat.id, bookItem);
 
-      // TODO: check if will be cleared all listeners for all users
-      bot.clearReplyListeners();
+      bot.removeReplyListener(newValuePromptListener);
     });
   } catch(error) {
     errorHandler(msg.chat.id, bot, error);

@@ -18,6 +18,7 @@ async function openEditableFieldsMenu(bot, msgId, bookItem) {
             [`Закончили: ${convertDateToUserFormat(bookItem.finished_at)} [${bookItem.id}]`],
             [`Страницы: ${bookItem.pages_amount} [${bookItem.id}]`, `Рейтинг: ${bookItem.rating} [${bookItem.id}]`],
             [`Обзор: ${bookItem.review} [${bookItem.id}]`],
+            [`Удалить книгу [${bookItem.id}]`],
             ['Закрыть меню'],
         ],
         resize_keyboard: true,

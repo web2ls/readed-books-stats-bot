@@ -152,6 +152,24 @@ BookController = {
       })
     })
   },
+
+  deleteBook: (bookId) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+      DELETE FROM books WHERE id = ${bookId};
+    `;
+
+    db.run(query, (error) => {
+      if (error) {
+        console.log('Failed to delete book', error.message);
+        reject();
+      } else {
+        console.log('Books has been deleted');
+        resolve();
+      }
+    })
+    })
+  },
 }
 
 module.exports = BookController;

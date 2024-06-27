@@ -4,6 +4,7 @@ const { openEditableFieldsMenu } = require('./menu-handler');
 const { getBookIdFromMessage } = require('../helpers');
 
 async function selectBookForEditHandler(bot, msg) {
+  console.log('selectBookForEditHandler');
   try {
     const bookId = getBookIdFromMessage(msg.text);
 
