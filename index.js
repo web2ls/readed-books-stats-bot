@@ -10,6 +10,7 @@ const selectBookForEditHandler = require('./tg-event-handlers/select-book-for-ed
 const getAmountByCurrentMonthHandler = require('./tg-event-handlers/get-amount-by-current-month-handler');
 const getAmountByCurrentYearHandler = require('./tg-event-handlers/get-amount-by-current-year-handler');
 const deleteBookHandler = require('./tg-event-handlers/delete-book-handler');
+const getBooksListByCurrentMonthHandler = require('./tg-event-handlers/get-books-list-by-current-month-handler');
 const { closeMenu, openQuickStatsMenu } = require('./tg-event-handlers/menu-handler');
 
 const createTableBooksQuery = `
@@ -54,15 +55,17 @@ bot.onText(/\/add/, addBookHandler.bind(this, bot));
 
 bot.onText(/\/find/, searchBookHandler.bind(this, bot));
 
-bot.onText(/quickstats/, openQuickStatsMenu.bind(this, bot));
+bot.onText(/\/quickstats/, openQuickStatsMenu.bind(this, bot));
 
 bot.onText(/^Количество за месяц$/, getAmountByCurrentMonthHandler.bind(this, bot));
 
 bot.onText(/^Количество за год$/, getAmountByCurrentYearHandler.bind(this, bot));
 
+bot.onText(/^Список книг за месяц$/, getBooksListByCurrentMonthHandler.bind(this, bot));
+
 bot.onText(/^(Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[0-9]*\]$/, editBookHandler.bind(this, bot));
 
-bot.onText(/^(?!Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор|Удалить книгу).*\[[\0-9]*\]$/, selectBookForEditHandler.bind(this, bot));
+bot.onText(/^(?!Автор|Наименование|Начали|Закончили|Страницы|Рейтинг|Обзор).*\[[\0-9]*\]$/, selectBookForEditHandler.bind(this, bot));
 
 bot.onText(/^Удалить книгу .*/, deleteBookHandler.bind(this, bot));
 

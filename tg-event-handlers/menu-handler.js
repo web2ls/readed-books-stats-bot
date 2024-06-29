@@ -31,6 +31,7 @@ async function openQuickStatsMenu(bot, msg) {
     reply_markup: {
       keyboard: [
         ['Количество за месяц', 'Количество за год'],
+        ['Список книг за месяц'],
         ['Закрыть меню'],
     ],
     resize_keyboard: true,

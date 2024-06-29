@@ -133,6 +133,34 @@ BookController = {
     })
   },
 
+  getBooksListByCurrentMonth: (userId) => {
+    return new Promise((resolve, reject) => {
+      const currentMonth = new Date().getMonth() + 1;
+      const currentMonthAsString = String(currentMonth).padStart(2, '0');
+      const currentYear = new Date().getFullYear();
+
+      const query = `
+        SELECT author, title FROM books WHERE strftime('%m', datetime(finished_at, 'unixepoch')) = '${currentMonthAsString}' AND strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}' AND user_id = ${userId};
+      `;
+
+      db.all(query, async (error, rows) => {
+        if (error) {
+          console.log('Failed to get books for current month', error.message);
+          reject();
+        } else {
+          console.log('Books for this month finded');
+          if (!rows.length) {
+            resolve('За этот месяц нет прочитанных книг');
+            return;
+          }
+
+          const result = rows.map(book => `${book.author}: ${book.title}`);
+          resolve(result.join('\n'));
+        }
+      })
+    })
+  },
+
   getBooksAmountByCurrentYear: (userId) => {
     return new Promise((resolve, reject) => {
       const currentYear = new Date().getFullYear();
