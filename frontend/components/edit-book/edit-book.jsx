@@ -15,6 +15,13 @@ import {
   ButtonGroup,
   Divider,
 } from '@chakra-ui/react';
+import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import { ru } from 'date-fns/locale/ru';
+
+import "react-datepicker/dist/react-datepicker.css";
+
+registerLocale('ru', ru);
+setDefaultLocale('ru');
 
 export function EditBook() {
 
@@ -33,12 +40,14 @@ export function EditBook() {
 
         <FormControl>
           <FormLabel>Когда начали читать</FormLabel>
-          <Input />
+          <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat={ 'dd.MM.yyyy' } />
+          <FormHelperText>Кликните по дате, чтобы выбрать.</FormHelperText>
         </FormControl>
 
         <FormControl>
           <FormLabel>Когда закончили читать</FormLabel>
-          <Input />
+          <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat={ 'dd.MM.yyyy' } />
+          <FormHelperText>Кликните по дате, чтобы выбрать.</FormHelperText>
         </FormControl>
 
         <FormControl>

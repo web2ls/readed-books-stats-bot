@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from "react-router-dom";
 import {
   FormControl,
@@ -8,15 +9,23 @@ import {
   Input,
   Flex,
   Center,
-  NumberdInput,
+  NumberInput,
   NumberInputField,
   Textarea,
   Button,
   ButtonGroup,
   Divider,
 } from '@chakra-ui/react';
+import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+import { ru } from 'date-fns/locale/ru';
+
+import "react-datepicker/dist/react-datepicker.css";
+
+registerLocale('ru', ru);
+setDefaultLocale('ru');
 
 export function AddBook() {
+  const [startDate, setStartDate] = useState(new Date());
 
   return (
     <Box>
@@ -33,12 +42,14 @@ export function AddBook() {
 
         <FormControl>
           <FormLabel>Когда начали читать</FormLabel>
-          <Input />
+          <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat={ 'dd.MM.yyyy' } />
+          <FormHelperText>Кликните по дате, чтобы выбрать.</FormHelperText>
         </FormControl>
 
         <FormControl>
           <FormLabel>Когда закончили читать</FormLabel>
-          <Input />
+          <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat={ 'dd.MM.yyyy' } />
+          <FormHelperText>Кликните по дате, чтобы выбрать.</FormHelperText>
         </FormControl>
 
         <FormControl>
