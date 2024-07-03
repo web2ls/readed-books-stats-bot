@@ -8,7 +8,7 @@ import {
   Input,
   Flex,
   Center,
-  NumberdInput,
+  NumberInput,
   NumberInputField,
   Textarea,
   Button,
@@ -16,7 +16,7 @@ import {
   Divider,
 } from '@chakra-ui/react';
 
-export function AddBook() {
+export function EditBook() {
 
   return (
     <Box>

@@ -11,6 +11,7 @@ import { ErrorPage } from './components/error-page/error-page';
 import { AddBook } from './components/add-book/add-book';
 import { FindBook } from './components/find-book/find-book';
 import { QuickStats } from './components/quick-stats/quick-stats';
+import { EditBook } from './components/edit-book/edit-book';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/quickstats",
     element: <QuickStats />
+  },
+  {
+    path: "/edit/:id",
+    element: <EditBook />
   },
 ]);
 
