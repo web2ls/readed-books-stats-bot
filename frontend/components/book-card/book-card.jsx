@@ -7,11 +7,18 @@ import {
   CardFooter,
   Heading,
   Text,
+  ButtonGroup,
 } from '@chakra-ui/react';
 
 export function BookItem() {
+  const imageUrl = new URL(
+    '../../static/images/1.jpg?as=jpg&width=200',
+    import.meta.url
+  );
+
   return (
     <Card
+      w={ '100%' }
       direction={{ base: 'column', sm: 'row' }}
       overflow='hidden'
       variant='outline'
@@ -19,24 +26,29 @@ export function BookItem() {
       <Image
         objectFit='cover'
         maxW={{ base: '100%', sm: '200px' }}
-        src='https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60'
+        src={ imageUrl }
         alt='Caffe Latte'
       />
 
       <Stack>
         <CardBody>
-          <Heading size='md'>The perfect latte</Heading>
+          <Heading
+            wordBreak={ 'break-all' } size='md'>Наименование книги</Heading>
 
-          <Text py='2'>
-            Caffè latte is a coffee beverage of Italian origin made with espresso
-            and steamed milk.
+          <Text py='2' wordBreak={ 'break-all' }>
+            Имя автора
           </Text>
         </CardBody>
 
         <CardFooter>
-          <Button variant='solid' colorScheme='blue'>
-            Buy Latte
-          </Button>
+          <ButtonGroup variant='outline' spacing='6'>
+            <Button variant='solid' colorScheme='gray'>
+              Редактировать
+            </Button>
+            <Button variant='solid' colorScheme='red'>
+              Удалить
+            </Button>
+          </ButtonGroup>
         </CardFooter>
       </Stack>
     </Card>
