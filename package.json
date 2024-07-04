@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "front": "parcel frontend/index.html"
+    "front": "parcel src/frontend/index.html"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "framer-motion": "^11.2.12",
     "node-telegram-bot-api": "^0.66.0",
     "react": "^18.3.1",
