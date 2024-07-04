@@ -15,6 +15,8 @@ const deleteBookHandler = require('./tg-event-handlers/delete-book-handler');
 const getBooksListByCurrentMonthHandler = require('./tg-event-handlers/get-books-list-by-current-month-handler');
 const { closeMenu, openQuickStatsMenu } = require('./tg-event-handlers/menu-handler');
 
+const { addBook, deleteBook, getBook, searchBook, getBooksByCurrentMonth, getBooksByCurrentYear } = require('./api');
+
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
     id INTEGER PRIMARY KEY,
@@ -75,6 +77,16 @@ bot.onText(/^Удалить книгу .*/, deleteBookHandler.bind(this, bot));
 bot.onText(/^Закрыть меню$/, closeMenu.bind(this, bot));
 
 bot.on("polling_error", err => console.log(err.data.error.message));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/api/books/search', searchBook);
+app.get('/api/books/by-month/:userId', getBooksByCurrentMonth);
+app.get('/api/books/by-year/:userId', getBooksByCurrentYear);
+app.get('/api/books/:id', getBook);
+app.post('/api/books', addBook);
+app.delete('/api/books/:id', deleteBook);
 
 app.listen(PORT, () => {
   console.log('Server has been started...');
