@@ -29,6 +29,10 @@ function sanitizeValue(value) {
 }
 
 function getValidatedDate(input) {
+  if (!input) {
+    return null;
+  }
+
   const value = sanitizeValue(input);
   const dateList = value.split('.');
 
@@ -58,26 +62,27 @@ function convertDateToUserFormat(date) {
 }
 
 function getValidatedPagesAmount(input) {
-  const value = sanitizeValue(input);
-  if (value === '-' || isNaN(value)) {
+  if (isNaN(input)) {
      return 0;
   }
 
-  return Number(value);
+  return Number(input);
 }
 
 function getValidatedRating(input) {
-  const value = sanitizeValue(input);
-  if (value === '-' || isNaN(value) || value <= 0 || value > 5) {
+  if (isNaN(input) || input <= 0 || input > 5) {
     return 0;
   }
 
-  return Number(value);
+  return Number(input);
 }
 
 function getValidatedText(input) {
-  const value = sanitizeValue(input);
-  return value.trim();
+  if (!input || !input.trim()) {
+    return input;
+  }
+
+  return sanitizeValue(input);
 }
 
 function getBookIdFromMessage(value) {

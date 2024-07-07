@@ -2,6 +2,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 const db = require('./db');
 const COMMANDS = require('./commands');
@@ -41,10 +42,14 @@ db.serialize(() => {
   })
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.API_PORT;
 const TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(TOKEN, {polling: true});
 bot.setMyCommands(COMMANDS);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
@@ -77,9 +82,6 @@ bot.onText(/^Удалить книгу .*/, deleteBookHandler.bind(this, bot));
 bot.onText(/^Закрыть меню$/, closeMenu.bind(this, bot));
 
 bot.on("polling_error", err => console.log(err.data.error.message));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/books/search', searchBook);
 app.get('/api/books/by-month/:userId', getBooksByCurrentMonth);

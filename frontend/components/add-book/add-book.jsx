@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   FormControl,
   FormLabel,
@@ -42,11 +43,11 @@ export function AddBook() {
   const [isAuthorError, setIsAuthorError] = useState(false);
   const [isTitleError, setIsTitleError] = useState(false);
 
+  const navigate = useNavigate();
+
   const onSubmit = () => {
     setIsAuthorError(false);
     setIsTitleError(false);
-
-    console.log(formState);
 
     if (isFieldEmpty(formState.author)) {
       setIsAuthorError(true);
@@ -65,8 +66,9 @@ export function AddBook() {
       review: validateString(formState.review),
     }
 
-    addBook(data).then(response => {
-      console.log('success');
+    // TODO: add success and error notify
+    addBook(data).then(() => {
+      navigate('/');
     }).catch(error => {
       console.error(error);
     })

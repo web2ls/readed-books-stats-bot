@@ -14,7 +14,7 @@ function addBook(request, response) {
   const value = request.body;
 
   const newBook = {
-    userId: value.userId,
+    userId: value.userId || 123,
     author: getValidatedText(value.author),
     title: getValidatedText(value.title),
     startedAt: getValidatedDate(value.startedAt),
@@ -31,10 +31,10 @@ function addBook(request, response) {
   db.run(query, (error) => {
     if (error) {
       console.log('Failed to add new book', error.message);
-      response.status(500).end();
+      response.status(500).json(error);
     } else {
       console.log('new book has been added');
-      response.status(200).send("Book has been added");
+      response.status(201).send("OK");
     }
   })
 }
