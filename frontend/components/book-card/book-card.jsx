@@ -10,7 +10,9 @@ import {
   ButtonGroup,
 } from '@chakra-ui/react';
 
-export function BookItem() {
+export function BookItem(props) {
+  const { data } = props;
+
   const imageUrl = new URL(
     '../../static/images/1.jpg?as=jpg&width=200',
     import.meta.url
@@ -33,10 +35,10 @@ export function BookItem() {
       <Stack>
         <CardBody>
           <Heading
-            wordBreak={ 'break-all' } size='md'>Наименование книги</Heading>
+            wordBreak={ 'break-all' } size='md'>{ data.title }</Heading>
 
           <Text py='2' wordBreak={ 'break-all' }>
-            Имя автора
+            { data.author }
           </Text>
         </CardBody>
 

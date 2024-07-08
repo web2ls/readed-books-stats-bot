@@ -16,6 +16,7 @@ import {
   Button,
   ButtonGroup,
   Divider,
+  useToast,
 } from '@chakra-ui/react';
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import { ru } from 'date-fns/locale/ru';
@@ -44,6 +45,7 @@ export function AddBook() {
   const [isTitleError, setIsTitleError] = useState(false);
 
   const navigate = useNavigate();
+  const toast = useToast();
 
   const onSubmit = () => {
     setIsAuthorError(false);
@@ -66,11 +68,23 @@ export function AddBook() {
       review: validateString(formState.review),
     }
 
-    // TODO: add success and error notify
     addBook(data).then(() => {
       navigate('/');
+      toast({
+        title: 'Книга добавлена',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
     }).catch(error => {
       console.error(error);
+      toast({
+        title: 'Ошибка',
+        description: "Произошла ошибка при добавлении книги. Попробуйте повторить операцию позже.",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
     })
   }
 

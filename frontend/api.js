@@ -14,3 +14,17 @@ export function addBook(book) {
     }
   })
 }
+
+export function searchBook(userId, query) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const url = new URL('http://localhost:8000/api/books/search');
+      const params = { userId, query };
+      url.search = new URLSearchParams(params).toString();
+      const response = await fetch(url);
+      resolve(await response.json());
+    } catch(error) {
+      reject(error);
+    }
+  })
+}
