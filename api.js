@@ -17,15 +17,15 @@ function addBook(request, response) {
     userId: value.userId || 123,
     author: getValidatedText(value.author),
     title: getValidatedText(value.title),
-    startedAt: getValidatedDate(value.startedAt),
-    finishedAt: getValidatedDate(value.finishedAt),
-    pagesAmount: getValidatedPagesAmount(value.pagesAmount),
+    started_at: getValidatedDate(value.started_at),
+    finished_at: getValidatedDate(value.finished_at),
+    pages_amount: getValidatedPagesAmount(value.pages_amount),
     rating: getValidatedRating(value.rating),
     review: getValidatedText(value.review),
   };
 
   const query = `
-    INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.startedAt}'), unixepoch('${newBook.finishedAt ? newBook.finishedAt : null}'), '${newBook.pagesAmount}', '${newBook.rating}', '${newBook.review}')
+    INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.started_at}'), unixepoch('${newBook.finished_at}'), '${newBook.pages_amount}', '${newBook.rating}', '${newBook.review}')
   `;
 
   db.run(query, (error) => {
@@ -46,15 +46,15 @@ function editBook(request, response) {
     userId: value.userId || 123,
     author: getValidatedText(value.author),
     title: getValidatedText(value.title),
-    startedAt: getValidatedDate(value.startedAt),
-    finishedAt: getValidatedDate(value.finishedAt),
-    pagesAmount: getValidatedPagesAmount(value.pagesAmount),
+    started_at: getValidatedDate(value.started_at),
+    finished_at: getValidatedDate(value.finished_at),
+    pages_amount: getValidatedPagesAmount(value.pages_amount),
     rating: getValidatedRating(value.rating),
     review: getValidatedText(value.review),
   };
 
   const query = `
-    UPDATE books SET user_id = "${updatedBook.userId}", author = "${updatedBook.author}", title = "${updatedBook.title}", started_at = "${updatedBook.startedAt}", finished_at = "${updatedBook.finishedAt}", pages_amount = "${updatedBook.pagesAmount}", rating = "${updatedBook.rating}", review = "${updatedBook.review}" WHERE id = ${value.id}
+    UPDATE books SET user_id = "${updatedBook.userId}", author = "${updatedBook.author}", title = "${updatedBook.title}", started_at = "${updatedBook.started_at}", finished_at = "${updatedBook.finished_at}", pages_amount = "${updatedBook.pages_amount}", rating = "${updatedBook.rating}", review = "${updatedBook.review}" WHERE id = ${value.id}
   `;
 
   db.run(query, (error) => {

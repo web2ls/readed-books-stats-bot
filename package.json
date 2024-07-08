@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "front": "parcel -p 1234 frontend/index.html"
+    "front": "parcel frontend/index.html"
   },
   "keywords": [],
   "author": "",

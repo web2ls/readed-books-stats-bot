@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   FormControl,
   FormLabel,
@@ -14,52 +16,141 @@ import {
   Button,
   ButtonGroup,
   Divider,
+  useToast,
 } from '@chakra-ui/react';
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import { ru } from 'date-fns/locale/ru';
+
+import { isFieldEmpty, validateString } from '../../helpers';
+import { getBook, editBook } from '../../api';
 
 import "react-datepicker/dist/react-datepicker.css";
 
 registerLocale('ru', ru);
 setDefaultLocale('ru');
 
+const initialFormState = {
+  author: '',
+  title: '',
+  started_at: new Date(),
+  finished_at: new Date(),
+  pages_amount: 0,
+  rating: 0,
+  review: '',
+};
+
 export function EditBook() {
+  const [formState, setFormState] = useState(initialFormState);
+  const [isAuthorError, setIsAuthorError] = useState(false);
+  const [isTitleError, setIsTitleError] = useState(false);
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  useEffect(() => {
+    getBook(id).then(response => {
+      setFormState(response);
+    }).catch(error => {
+      console.error(error);
+      toast({
+        title: 'Ошибка',
+        description: "Произошла ошибка при попытке загрузить данные. Попробуйте повторить операцию позже.",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    })
+  }, []);
+
+  const onSubmit = () => {
+    setIsAuthorError(false);
+    setIsTitleError(false);
+
+    if (isFieldEmpty(formState.author)) {
+      setIsAuthorError(true);
+      return;
+    }
+
+    if (isFieldEmpty(formState.title)) {
+      setIsTitleError(true);
+      return;
+    }
+
+    const data = {
+      ...formState,
+      author: validateString(formState.author),
+      title: validateString(formState.title),
+      review: validateString(formState.review),
+    }
+
+    editBook(data).then(() => {
+      navigate(-1);
+      toast({
+        title: 'Книга обновлена',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
+    }).catch(error => {
+      console.error(error);
+      toast({
+        title: 'Ошибка',
+        description: "Произошла ошибка при обновлении книги. Попробуйте повторить операцию позже.",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    })
+  }
+
+  const updateFormState = (field, event) => {
+    // FIXME: error with editing value
+    // when resolved check same problem in addbook api
+    console.log('event is: ', event);
+    setFormState({
+      ...formState,
+      [field]: value
+    })
+  };
 
   return (
     <Box>
       <Flex direction={ 'column' } gap={ '20px' }>
-        <FormControl isRequired>
+        <FormControl isRequired isInvalid={ isAuthorError }>
           <FormLabel>Автор</FormLabel>
-          <Input />
+          <Input value={ formState.author } onChange={ (event) => updateFormState('author', event.target.value) } />
+          <FormErrorMessage>Поле обязательное</FormErrorMessage>
         </FormControl>
 
-        <FormControl isRequired>
+        <FormControl isRequired isInvalid={ isTitleError }>
           <FormLabel>Наименование</FormLabel>
-          <Input />
+          <Input value={ formState.title } onChange={ (event) => updateFormState('title', event.target.value) } />
+          <FormErrorMessage>Поле обязательное</FormErrorMessage>
         </FormControl>
 
         <FormControl>
           <FormLabel>Когда начали читать</FormLabel>
-          <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat={ 'dd.MM.yyyy' } />
+          <DatePicker selected={formState.started_at} onChange={(date) => updateFormState('started_at', date)} dateFormat={ 'dd.MM.yyyy' } isClearable />
           <FormHelperText>Кликните по дате, чтобы выбрать.</FormHelperText>
         </FormControl>
 
         <FormControl>
           <FormLabel>Когда закончили читать</FormLabel>
-          <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} dateFormat={ 'dd.MM.yyyy' } />
+          <DatePicker selected={formState.finished_at} onChange={(date) => updateFormState('finished_at', date)} dateFormat={ 'dd.MM.yyyy' } isClearable />
           <FormHelperText>Кликните по дате, чтобы выбрать.</FormHelperText>
         </FormControl>
 
         <FormControl>
           <FormLabel>Количество страниц</FormLabel>
-          <NumberInput defaultValue={ 0 } min={ 0 }>
+          <NumberInput min={ 0 } value={ Number(formState.pages_amount) } onChange={ (event) => updateFormState('pages_amount', event.target.value) } >
             <NumberInputField />
           </NumberInput>
         </FormControl>
 
         <FormControl>
           <FormLabel>Рейтинг</FormLabel>
-          <NumberInput defaultValue={ 0 } min={ 0 } max={ 5 } precision={ 1 }>
+          <NumberInput defaultValue={ 0 } min={ 0 } max={ 5 } precision={ 1 } value={ Number(formState.rating) } onChange={ (event) => updateFormState('rating', event) } >
             <NumberInputField />
           </NumberInput>
           <FormHelperText>Укажите ваш рейтинг по шкале от 1 до 5.</FormHelperText>
@@ -67,7 +158,7 @@ export function EditBook() {
 
         <FormControl>
           <FormLabel>Обзор</FormLabel>
-          <Textarea />
+          <Textarea value={ formState.review } onChange={ (event) => updateFormState('review', event.target.value) } />
           <FormHelperText>Напишите вашу мини рецензию на книгу.</FormHelperText>
         </FormControl>
       </Flex>
@@ -76,12 +167,10 @@ export function EditBook() {
 
       <Center>
         <ButtonGroup variant='outline' spacing='6'>
-          <Link to={ '/' }>
-            <Button colorScheme='red' variant={ 'solid' }>
-              Отмена
-            </Button>
-          </Link>
-          <Button colorScheme='green' variant={ 'solid' } type="submit">Добавить</Button>
+          <Button colorScheme='red' variant={ 'solid' } onClick={ () => navigate(-1) }>
+            Отмена
+          </Button>
+          <Button colorScheme='green' variant={ 'solid' } type="submit" onClick={ onSubmit }>Обновить</Button>
         </ButtonGroup>
       </Center>
     </Box>

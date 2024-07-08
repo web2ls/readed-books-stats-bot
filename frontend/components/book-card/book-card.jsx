@@ -61,7 +61,7 @@ export function BookItem(props) {
 
         <CardFooter>
           <ButtonGroup variant='outline' spacing='6'>
-            <Link to={ '/' }>
+            <Link to={ `/edit/${ data.id }` }>
               <Button variant='solid' colorScheme='gray'>
                 Редактировать
               </Button>

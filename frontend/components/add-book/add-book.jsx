@@ -32,9 +32,9 @@ setDefaultLocale('ru');
 const initialFormState = {
   author: '',
   title: '',
-  startedAt: new Date(),
-  finishedAt: new Date(),
-  pagesAmount: 0,
+  started_at: new Date(),
+  finished_at: new Date(),
+  pages_amount: 0,
   rating: 0,
   review: '',
 };
@@ -112,20 +112,20 @@ export function AddBook() {
 
         <FormControl>
           <FormLabel>Когда начали читать</FormLabel>
-          <DatePicker selected={formState.startedAt} onChange={(date) => updateFormState('startedAt', date)} dateFormat={ 'dd.MM.yyyy' } isClearable />
+          <DatePicker selected={formState.started_at} onChange={(date) => updateFormState('started_at', date)} dateFormat={ 'dd.MM.yyyy' } isClearable />
           <FormHelperText>Кликните по дате, чтобы выбрать.</FormHelperText>
         </FormControl>
 
         <FormControl>
           <FormLabel>Когда закончили читать</FormLabel>
-          <DatePicker selected={formState.finishedAt} onChange={(date) => updateFormState('finishedAt', date)} dateFormat={ 'dd.MM.yyyy' } isClearable />
+          <DatePicker selected={formState.finished_at} onChange={(date) => updateFormState('finished_at', date)} dateFormat={ 'dd.MM.yyyy' } isClearable />
           <FormHelperText>Кликните по дате, чтобы выбрать.</FormHelperText>
         </FormControl>
 
         <FormControl>
           <FormLabel>Количество страниц</FormLabel>
           <NumberInput defaultValue={ 0 } min={ 0 } >
-            <NumberInputField value={ formState.pagesAmount } onChange={ (event) => updateFormState('pagesAmount', event.target.value) } />
+            <NumberInputField value={ formState.pages_amount } onChange={ (event) => updateFormState('pages_amount', event.target.value) } />
           </NumberInput>
         </FormControl>
 
