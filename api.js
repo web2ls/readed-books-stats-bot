@@ -39,6 +39,35 @@ function addBook(request, response) {
   })
 }
 
+function editBook(request, response) {
+  const value = request.body;
+
+  const updatedBook = {
+    userId: value.userId || 123,
+    author: getValidatedText(value.author),
+    title: getValidatedText(value.title),
+    startedAt: getValidatedDate(value.startedAt),
+    finishedAt: getValidatedDate(value.finishedAt),
+    pagesAmount: getValidatedPagesAmount(value.pagesAmount),
+    rating: getValidatedRating(value.rating),
+    review: getValidatedText(value.review),
+  };
+
+  const query = `
+    UPDATE books SET user_id = "${updatedBook.userId}", author = "${updatedBook.author}", title = "${updatedBook.title}", started_at = "${updatedBook.startedAt}", finished_at = "${updatedBook.finishedAt}", pages_amount = "${updatedBook.pagesAmount}", rating = "${updatedBook.rating}", review = "${updatedBook.review}" WHERE id = ${value.id}
+  `;
+
+  db.run(query, (error) => {
+    if (error) {
+      console.log('Failed to update book', error.message);
+      response.status(500).json(error);
+    } else {
+      console.log('book has been updated');
+      response.status(200).send("OK");
+    }
+  })
+}
+
 function getBook(request, response) {
   const bookId = request.params.id;
 
@@ -82,10 +111,6 @@ function searchBook(request, response) {
       response.json(rows);
     }
   });
-}
-
-function updateBook(req, res) {
-  res.send('book updated');
 }
 
 function getBooksByCurrentMonth(request, response) {
@@ -138,16 +163,17 @@ function deleteBook(request, response) {
   db.run(query, (error) => {
     if (error) {
       console.log('Failed to delete book', error.message);
-      response.status(500).end();
+      response.status(500).json(error);
     } else {
       console.log('Books has been deleted');
-      response.status(200).send('Book has been deleted');
+      response.status(200).send('OK');
     }
   })
 }
 
 module.exports = {
   addBook,
+  editBook,
   getBook,
   deleteBook,
   searchBook,

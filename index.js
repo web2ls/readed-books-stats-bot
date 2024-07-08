@@ -16,7 +16,7 @@ const deleteBookHandler = require('./tg-event-handlers/delete-book-handler');
 const getBooksListByCurrentMonthHandler = require('./tg-event-handlers/get-books-list-by-current-month-handler');
 const { closeMenu, openQuickStatsMenu } = require('./tg-event-handlers/menu-handler');
 
-const { addBook, deleteBook, getBook, searchBook, getBooksByCurrentMonth, getBooksByCurrentYear } = require('./api');
+const { addBook, editBook, deleteBook, getBook, searchBook, getBooksByCurrentMonth, getBooksByCurrentYear } = require('./api');
 
 const createTableBooksQuery = `
   CREATE TABLE IF NOT EXISTS books (
@@ -87,7 +87,8 @@ app.get('/api/books/search', searchBook);
 app.get('/api/books/by-month/:userId', getBooksByCurrentMonth);
 app.get('/api/books/by-year/:userId', getBooksByCurrentYear);
 app.get('/api/books/:id', getBook);
-app.post('/api/books', addBook);
+app.post('/api/books/add', addBook);
+app.post('/api/books/edit', editBook);
 app.delete('/api/books/:id', deleteBook);
 
 app.listen(PORT, () => {

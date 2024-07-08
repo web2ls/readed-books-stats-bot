@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+import { Link } from "react-router-dom";
 import {
   Button,
   Card,
@@ -8,15 +10,30 @@ import {
   Heading,
   Text,
   ButtonGroup,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 export function BookItem(props) {
-  const { data } = props;
+  const { data, onDeleteBook } = props;
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
 
   const imageUrl = new URL(
     '../../static/images/1.jpg?as=jpg&width=200',
     import.meta.url
   );
+
+  const handleDeleteBook = () => {
+    onClose();
+    onDeleteBook(data.id);
+  }
 
   return (
     <Card
@@ -44,15 +61,44 @@ export function BookItem(props) {
 
         <CardFooter>
           <ButtonGroup variant='outline' spacing='6'>
-            <Button variant='solid' colorScheme='gray'>
-              Редактировать
-            </Button>
-            <Button variant='solid' colorScheme='red'>
+            <Link to={ '/' }>
+              <Button variant='solid' colorScheme='gray'>
+                Редактировать
+              </Button>
+            </Link>
+            <Button variant='solid' colorScheme='red' onClick={ onOpen }>
               Удалить
             </Button>
           </ButtonGroup>
         </CardFooter>
       </Stack>
+
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Удаление книги
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Уверены, что хотите удалить книгу?
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                Отмена
+              </Button>
+              <Button colorScheme='red' onClick={handleDeleteBook} ml={3}>
+                Удалить
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Card>
   )
 }

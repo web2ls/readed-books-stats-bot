@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 
 import { BookItem } from "../book-card/book-card";
-import { searchBook } from '../../api';
+import { searchBook, deleteBook } from '../../api';
 
 export function FindBook() {
   const [books, setBooks] = useState([]);
@@ -23,7 +23,6 @@ export function FindBook() {
   const toast = useToast();
 
   const onSearchBook = (event) => {
-    console.log('on search book');
     const value = event.target.value;
 
     if (!value.trim() || value.length < 2) {
@@ -48,6 +47,29 @@ export function FindBook() {
 
   const debouncedSearchBook = useMemo(() => debounce(onSearchBook, 400), []);
 
+  const handleDeleteBook = (id) => {
+    deleteBook(id).then(() => {
+      const updatedBooksList = books.filter(book => book.id !== id);
+      setBooks(updatedBooksList);
+
+      toast({
+        title: 'Книга удалена',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    }).catch(error => {
+      console.error(error);
+      toast({
+        title: 'Ошибка',
+        description: "Произошла ошибка при удалении книги. Попробуйте повторить операцию позже.",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    })
+  }
+
   return (
     <Box>
       <Flex direction={ 'column' } gap={ '20px' }>
@@ -63,7 +85,7 @@ export function FindBook() {
 
       <Stack>
         { books.map(book => (
-          <BookItem key={ book.id } data={ book } />
+          <BookItem key={ book.id } data={ book } onDeleteBook={ handleDeleteBook } />
         )) }
       </Stack>
 
