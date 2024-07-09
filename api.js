@@ -14,7 +14,7 @@ function addBook(request, response) {
   const value = request.body;
 
   const newBook = {
-    userId: value.userId || 123,
+    user_id: value.user_id,
     author: getValidatedText(value.author),
     title: getValidatedText(value.title),
     started_at: getValidatedDate(value.started_at),
@@ -25,7 +25,7 @@ function addBook(request, response) {
   };
 
   const query = `
-    INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.userId}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.started_at}'), unixepoch('${newBook.finished_at}'), '${newBook.pages_amount}', '${newBook.rating}', '${newBook.review}')
+    INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.user_id}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.started_at}'), unixepoch('${newBook.finished_at}'), '${newBook.pages_amount}', '${newBook.rating}', '${newBook.review}')
   `;
 
   db.run(query, (error) => {
@@ -43,7 +43,7 @@ function editBook(request, response) {
   const value = request.body;
 
   const updatedBook = {
-    userId: value.userId || 123,
+    user_id: value.user_id,
     author: getValidatedText(value.author),
     title: getValidatedText(value.title),
     started_at: getValidatedDate(value.started_at),
@@ -54,7 +54,7 @@ function editBook(request, response) {
   };
 
   const query = `
-    UPDATE books SET user_id = "${updatedBook.userId}", author = "${updatedBook.author}", title = "${updatedBook.title}", started_at = "${updatedBook.started_at}", finished_at = "${updatedBook.finished_at}", pages_amount = "${updatedBook.pages_amount}", rating = "${updatedBook.rating}", review = "${updatedBook.review}" WHERE id = ${value.id}
+    UPDATE books SET user_id = "${updatedBook.user_id}", author = "${updatedBook.author}", title = "${updatedBook.title}", started_at = "${updatedBook.started_at}", finished_at = "${updatedBook.finished_at}", pages_amount = "${updatedBook.pages_amount}", rating = "${updatedBook.rating}", review = "${updatedBook.review}" WHERE id = ${value.id}
   `;
 
   db.run(query, (error) => {
@@ -72,7 +72,7 @@ function getBook(request, response) {
   const bookId = request.params.id;
 
   const query = `
-    SELECT id, author, title, datetime(started_at, 'unixepoch') as started_at, datetime(finished_at, 'unixepoch') as finished_at, pages_amount, rating, review FROM books WHERE id = ${bookId}
+    SELECT id, user_id, author, title, datetime(started_at, 'unixepoch') as started_at, datetime(finished_at, 'unixepoch') as finished_at, pages_amount, rating, review FROM books WHERE id = ${bookId}
   `;
 
   db.get(query, (error, row) => {
@@ -100,7 +100,7 @@ function searchBook(request, response) {
   }
 
   const dbQuery = `
-    SELECT * FROM books WHERE user_id = ${userId} AND (author LIKE '%${sanitaizedQuery}%' OR title LIKE '%${sanitaizedQuery}%') LIMIT 10
+    SELECT * FROM books WHERE user_id = ${userId} AND (author LIKE '%${sanitaizedQuery}%' OR author LIKE '%${sanitaizedQuery.charAt(0).toUpperCase() + sanitaizedQuery.slice(1)}%' OR title LIKE '%${sanitaizedQuery}%' OR title LIKE '%${sanitaizedQuery.charAt(0).toUpperCase() + sanitaizedQuery.slice(1)}%') LIMIT 10;
   `;
 
   db.all(dbQuery, (err, rows) => {

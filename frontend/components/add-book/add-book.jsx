@@ -63,10 +63,13 @@ export function AddBook() {
 
     const data = {
       ...formState,
+      user_id: window.Telegram?.WebApp?.id ?? 123,
       author: validateString(formState.author),
       title: validateString(formState.title),
       review: validateString(formState.review),
     }
+
+    console.log('book before send to server: ', data);
 
     addBook(data).then(() => {
       navigate('/');
