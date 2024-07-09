@@ -47,6 +47,7 @@ const TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(TOKEN, {polling: true});
 bot.setMyCommands(COMMANDS);
 
+app.use(express.static('dist'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
