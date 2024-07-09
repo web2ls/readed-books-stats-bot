@@ -104,10 +104,7 @@ export function EditBook() {
     })
   }
 
-  const updateFormState = (field, event) => {
-    // FIXME: error with editing value
-    // when resolved check same problem in addbook api
-    console.log('event is: ', event);
+  const updateFormState = (field, value) => {
     setFormState({
       ...formState,
       [field]: value
@@ -143,15 +140,15 @@ export function EditBook() {
 
         <FormControl>
           <FormLabel>Количество страниц</FormLabel>
-          <NumberInput min={ 0 } value={ Number(formState.pages_amount) } onChange={ (event) => updateFormState('pages_amount', event.target.value) } >
-            <NumberInputField />
+          <NumberInput min={ 0 } value={ Number(formState.pages_amount) } >
+            <NumberInputField onChange={ (event) => updateFormState('pages_amount', event.target.value) } />
           </NumberInput>
         </FormControl>
 
         <FormControl>
           <FormLabel>Рейтинг</FormLabel>
-          <NumberInput defaultValue={ 0 } min={ 0 } max={ 5 } precision={ 1 } value={ Number(formState.rating) } onChange={ (event) => updateFormState('rating', event) } >
-            <NumberInputField />
+          <NumberInput defaultValue={ 0 } min={ 0 } max={ 5 } precision={ 1 } value={ Number(formState.rating) } >
+            <NumberInputField onChange={ (event) => updateFormState('rating', event.target.value) } />
           </NumberInput>
           <FormHelperText>Укажите ваш рейтинг по шкале от 1 до 5.</FormHelperText>
         </FormControl>
