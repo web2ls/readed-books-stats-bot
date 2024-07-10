@@ -38,7 +38,8 @@ export function searchBook(userId, query) {
   return new Promise(async (resolve, reject) => {
     try {
       const params = { userId, query };
-      const response = await fetch(`${API_HOST}/api/books/search${params}`);
+      const urlParams = new URLSearchParams(params).toString();
+      const response = await fetch(`${API_HOST}/api/books/search${urlParams}`);
       resolve(await response.json());
     } catch(error) {
       reject(error);
