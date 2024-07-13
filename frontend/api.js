@@ -39,7 +39,7 @@ export function searchBook(userId, query) {
     try {
       const params = { userId, query };
       const urlParams = new URLSearchParams(params).toString();
-      const response = await fetch(`${API_HOST}/api/books/search${urlParams}`);
+      const response = await fetch(`${API_HOST}/api/books/search/?${urlParams}`);
       resolve(await response.json());
     } catch(error) {
       reject(error);
