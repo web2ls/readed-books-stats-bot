@@ -3,6 +3,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const pino = require('pino-http')();
 
 const db = require('./db');
 const COMMANDS = require('./commands');
@@ -51,6 +52,7 @@ app.use(express.static('dist'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(pino);
 
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;

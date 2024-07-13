@@ -11,6 +11,7 @@ const {
 } = require('./helpers');
 
 function addBook(request, response) {
+  request.log.info('=== ADD BOOK REQUEST ===');
   const value = request.body;
 
   const newBook = {
@@ -30,7 +31,7 @@ function addBook(request, response) {
 
   db.run(query, (error) => {
     if (error) {
-      console.log('Failed to add new book', error.message);
+      request.log.error(error, error.message);
       response.status(500).json(error);
     } else {
       console.log('new book has been added');
@@ -40,6 +41,7 @@ function addBook(request, response) {
 }
 
 function editBook(request, response) {
+  request.log.info('=== EDIT BOOK REQUEST ===');
   const value = request.body;
 
   const updatedBook = {
@@ -59,7 +61,7 @@ function editBook(request, response) {
 
   db.run(query, (error) => {
     if (error) {
-      console.log('Failed to update book', error.message);
+      request.log.error(error, error.message);
       response.status(500).json(error);
     } else {
       console.log('book has been updated');
@@ -69,15 +71,16 @@ function editBook(request, response) {
 }
 
 function getBook(request, response) {
+  request.log.info('=== GET BOOK BY ID REQUEST ===');
   const bookId = request.params.id;
 
   const query = `
-    SELECT id, user_id, author, title, datetime(started_at, 'unixepoch') as started_at, datetime(finished_at, 'unixepoch') as finished_at, pages_amount, rating, review FROM books WHERE id = ${bookId}
+    SELECT id, user_id, author, title, datetime(started_at, 'unixepoch') as started_at, datetime(finished_at, 'unixepoch') as finished_at, pages_amount, rating, review FROM books WHERE id = ${bookId};
   `;
 
   db.get(query, (error, row) => {
     if (error) {
-      console.log('Failed to get book by id', error);
+      request.log.error(error, error.message);
       response.status(500).end();
     } else {
       if (!row) {
@@ -85,13 +88,14 @@ function getBook(request, response) {
         return;
       }
 
-      console.log('finded book is, ', row);
+      console.log('finded book is: ', row);
       response.json(row);
     }
   })
 }
 
 function searchBook(request, response) {
+  request.log.info('=== SEARCH BOOK BY QUERY REQUEST ===');
   const userId = request.query.userId;
   const sanitaizedQuery = getValidatedText(request.query.query);
   if (!sanitaizedQuery) {
@@ -103,11 +107,12 @@ function searchBook(request, response) {
     SELECT * FROM books WHERE user_id = ${userId} AND (author LIKE '%${sanitaizedQuery}%' OR author LIKE '%${sanitaizedQuery.charAt(0).toUpperCase() + sanitaizedQuery.slice(1)}%' OR title LIKE '%${sanitaizedQuery}%' OR title LIKE '%${sanitaizedQuery.charAt(0).toUpperCase() + sanitaizedQuery.slice(1)}%') LIMIT 10;
   `;
 
-  db.all(dbQuery, (err, rows) => {
-    if (err) {
-      console.error('Failed to search books by query:', err.message);
+  db.all(dbQuery, (error, rows) => {
+    if (error) {
+      request.log.error(error, error.message);
       response.status(500).end();
     } else {
+      console.log('search books has been completed');
       response.json(rows);
     }
   });
@@ -154,6 +159,7 @@ function getBooksByCurrentYear(request, response) {
 }
 
 function deleteBook(request, response) {
+  request.log.info('=== DELETE BOOK REQUEST ===');
   const bookId = request.params.id;
 
   const query = `
@@ -162,7 +168,7 @@ function deleteBook(request, response) {
 
   db.run(query, (error) => {
     if (error) {
-      console.log('Failed to delete book', error.message);
+      request.log.error(error, error.message);
       response.status(500).json(error);
     } else {
       console.log('Books has been deleted');
