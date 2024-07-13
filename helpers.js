@@ -35,7 +35,7 @@ function getValidatedDate(input) {
 
   const value = sanitizeValue(input);
 
-  return value;
+  return new Date(value).toISOString();
 }
 
 function convertDateToUserFormat(date) {

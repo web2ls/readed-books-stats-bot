@@ -56,7 +56,7 @@ function editBook(request, response) {
   };
 
   const query = `
-    UPDATE books SET user_id = "${updatedBook.user_id}", author = "${updatedBook.author}", title = "${updatedBook.title}", started_at = "${updatedBook.started_at}", finished_at = "${updatedBook.finished_at}", pages_amount = "${updatedBook.pages_amount}", rating = "${updatedBook.rating}", review = "${updatedBook.review}" WHERE id = ${value.id}
+    UPDATE books SET user_id = '${updatedBook.user_id}', author = '${updatedBook.author}', title = '${updatedBook.title}', started_at = unixepoch('${updatedBook.started_at}'), finished_at = unixepoch('${updatedBook.finished_at}'), pages_amount = '${updatedBook.pages_amount}', rating = '${updatedBook.rating}', review = '${updatedBook.review}' WHERE id = ${value.id}
   `;
 
   db.run(query, (error) => {
