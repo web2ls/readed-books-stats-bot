@@ -63,7 +63,7 @@ export function AddBook() {
 
     const data = {
       ...formState,
-      user_id: window.Telegram?.WebApp?.id ?? 123,
+      user_id: window.Telegram?.WebApp?.initData?.user?.id ?? 123,
       author: validateString(formState.author),
       title: validateString(formState.title),
       review: validateString(formState.review),

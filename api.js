@@ -177,6 +177,62 @@ function deleteBook(request, response) {
   })
 }
 
+function getBooksCountByCurrentMonth(userId) {
+  return new Promise((resolve, reject) => {
+    const currentMonth = new Date().getMonth() + 1;
+    const currentMonthAsString = String(currentMonth).padStart(2, '0');
+    const currentYear = new Date().getFullYear();
+
+    const query = `
+      SELECT COUNT(*) as count FROM books WHERE strftime('%m', datetime(finished_at, 'unixepoch')) = '${currentMonthAsString}' AND strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}' AND user_id = ${userId};
+    `;
+
+    db.get(query, (error, row) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(row);
+      }
+    })
+  })
+}
+
+function getBooksCountByCurrentYear(userId) {
+  return new Promise((resolve, reject) => {
+    const currentYear = new Date().getFullYear();
+
+    const query = `
+      SELECT COUNT(*) as count FROM books WHERE strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}' AND user_id = ${userId};
+    `;
+
+    db.get(query, (error, row) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(row);
+      }
+    })
+  })
+}
+
+async function getQuickStats(request, response) {
+  request.log.info('=== GET QUICK STATS REQUEST ===');
+  const userId = request.params.id;
+
+  const byCurrentMonth = await getBooksCountByCurrentMonth(userId);
+  const byCurrentYear = await getBooksCountByCurrentYear(userId);
+  const result = [];
+  result.push({
+    name: 'За текущий месяц',
+    value: byCurrentMonth.count,
+  });
+  result.push({
+    name: 'За текущий год',
+    value: byCurrentYear.count,
+  });
+  response.json(result);
+}
+
 module.exports = {
   addBook,
   editBook,
@@ -185,4 +241,5 @@ module.exports = {
   searchBook,
   getBooksByCurrentMonth,
   getBooksByCurrentYear,
+  getQuickStats,
 }

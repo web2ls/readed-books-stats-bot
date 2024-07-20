@@ -71,3 +71,14 @@ export function getBook(id) {
   })
 }
 
+export function getQuickStats(userId = 123) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(`${API_HOST}/api/users/quick-stats/${ userId }`);
+      resolve(await response.json());
+    } catch(error) {
+      reject(error);
+    }
+  })
+}
+
