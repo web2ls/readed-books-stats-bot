@@ -21,7 +21,6 @@ export function QuickStats() {
   useEffect(() => {
     const userId = 123;
     getQuickStats(userId).then(response => {
-      console.log(response);
       setData(response);
     }).catch(error => {
       console.error(error);

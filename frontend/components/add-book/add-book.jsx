@@ -69,8 +69,6 @@ export function AddBook() {
       review: validateString(formState.review),
     }
 
-    console.log('book before send to server: ', data);
-
     addBook(data).then(() => {
       navigate('/');
       toast({

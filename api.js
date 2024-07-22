@@ -215,12 +215,29 @@ function getBooksCountByCurrentYear(userId) {
   })
 }
 
+function getAllBooksCount(userId) {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT COUNT(*) as count FROM books WHERE finished_at IS NOT NULL AND user_id = ${userId};
+    `;
+
+    db.get(query, (error, row) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(row);
+      }
+    })
+  })
+}
+
 async function getQuickStats(request, response) {
   request.log.info('=== GET QUICK STATS REQUEST ===');
   const userId = request.params.id;
 
   const byCurrentMonth = await getBooksCountByCurrentMonth(userId);
   const byCurrentYear = await getBooksCountByCurrentYear(userId);
+  const allReadedBooks = await getAllBooksCount(userId);
   const result = [];
   result.push({
     name: 'За текущий месяц',
@@ -229,6 +246,10 @@ async function getQuickStats(request, response) {
   result.push({
     name: 'За текущий год',
     value: byCurrentYear.count,
+  });
+  result.push({
+    name: 'Всего прочитано',
+    value: allReadedBooks.count,
   });
   response.json(result);
 }
@@ -241,5 +262,6 @@ module.exports = {
   searchBook,
   getBooksByCurrentMonth,
   getBooksByCurrentYear,
+  getAllBooksCount,
   getQuickStats,
 }
