@@ -231,6 +231,22 @@ function getAllBooksCount(userId) {
   })
 }
 
+function getAllUnfinishedBooksCount(userId) {
+  return new Promise((resolve, reject) => {
+    const query = `
+      SELECT COUNT(*) as count FROM books WHERE finished_at IS NULL AND user_id = ${userId};
+    `;
+
+    db.get(query, (error, row) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(row);
+      }
+    })
+  })
+}
+
 async function getQuickStats(request, response) {
   request.log.info('=== GET QUICK STATS REQUEST ===');
   const userId = request.params.id;
@@ -238,6 +254,7 @@ async function getQuickStats(request, response) {
   const byCurrentMonth = await getBooksCountByCurrentMonth(userId);
   const byCurrentYear = await getBooksCountByCurrentYear(userId);
   const allReadedBooks = await getAllBooksCount(userId);
+  const allUnfinishedBooks = await getAllUnfinishedBooksCount(userId);
   const result = [];
   result.push({
     name: 'За текущий месяц',
@@ -250,6 +267,10 @@ async function getQuickStats(request, response) {
   result.push({
     name: 'Всего прочитано',
     value: allReadedBooks.count,
+  });
+  result.push({
+    name: 'Незаконченных',
+    value: allUnfinishedBooks.count,
   });
   response.json(result);
 }
