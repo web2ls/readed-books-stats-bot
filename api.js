@@ -5,9 +5,6 @@ const {
   getValidatedPagesAmount,
   getValidatedRating,
   getValidatedText,
-  detectBookFieldForUpdate,
-  BOOK_FIELDS_MAPPING,
-  BOOK_FIELD_VALIDATOR,
 } = require('./helpers');
 
 function addBook(request, response) {
@@ -116,46 +113,6 @@ function searchBook(request, response) {
       response.json(rows);
     }
   });
-}
-
-function getBooksByCurrentMonth(request, response) {
-  const userId = request.params.userId;
-  const currentMonth = new Date().getMonth() + 1;
-  const currentMonthAsString = String(currentMonth).padStart(2, '0');
-  const currentYear = new Date().getFullYear();
-
-  const query = `
-    SELECT * FROM books WHERE strftime('%m', datetime(finished_at, 'unixepoch')) = '${currentMonthAsString}' AND strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}' AND user_id = ${userId};
-  `;
-
-  db.all(query, (error, rows) => {
-    if (error) {
-      console.log('Failed to get books for current month', error.message);
-      response.status(500).end();
-    } else {
-      console.log('Books for this month finded');
-      response.json(rows);
-    }
-  })
-}
-
-function getBooksByCurrentYear(request, response) {
-  const userId = request.params.userId;
-  const currentYear = new Date().getFullYear();
-
-  const query = `
-    SELECT * FROM books WHERE strftime('%Y', datetime(finished_at, 'unixepoch')) = '${currentYear}' AND user_id = ${userId};
-  `;
-
-  db.all(query, (error, rows) => {
-    if (error) {
-      console.log('Failed to get books for current year', error.message);
-      response.status(500).end();
-    } else {
-      console.log('Books for this year finded');
-      response.json(rows);
-    }
-  })
 }
 
 function deleteBook(request, response) {
@@ -281,8 +238,6 @@ module.exports = {
   getBook,
   deleteBook,
   searchBook,
-  getBooksByCurrentMonth,
-  getBooksByCurrentYear,
   getAllBooksCount,
   getQuickStats,
 }
