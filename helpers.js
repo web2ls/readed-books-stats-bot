@@ -1,29 +1,5 @@
 const validator = require('validator');
 
-const BOOK_FIELDS_MAPPING = {
-  'Автор': 'author',
-  'Наименование': 'title',
-  'Начали': 'started_at',
-  'Закончили': 'finished_at',
-  'Страницы': 'pages_amount',
-  'Рейтинг': 'rating',
-  'Обзор': 'review',
-}
-
-const BOOK_FIELD_VALIDATOR = {
-  'author': getValidatedText,
-  'title': getValidatedText,
-  'started_at': getValidatedDate,
-  'finished_at': getValidatedDate,
-  'pages_amount': getValidatedPagesAmount,
-  'rating': getValidatedRating,
-  'review': getValidatedText,
-}
-
-function detectBookFieldForUpdate(value) {
-  return value.split(':')[0];
-}
-
 function sanitizeValue(value) {
   return validator.escape(value);
 }
@@ -93,8 +69,5 @@ module.exports = {
   getValidatedRating,
   getValidatedText,
   getBookIdFromMessage,
-  BOOK_FIELDS_MAPPING,
-  BOOK_FIELD_VALIDATOR,
-  detectBookFieldForUpdate,
   convertDateToUserFormat,
 }

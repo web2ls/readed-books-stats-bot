@@ -61,6 +61,9 @@ export function AddBook() {
       return;
     }
 
+    console.log('Telegram is: ', window.Telegram);
+    console.log('user id is: ', window.Telegram?.WebApp?.initData?.user?.id);
+
     const data = {
       ...formState,
       user_id: window.Telegram?.WebApp?.initData?.user?.id ?? 123,
