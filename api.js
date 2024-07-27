@@ -22,6 +22,8 @@ function addBook(request, response) {
     review: getValidatedText(value.review),
   };
 
+  console.log('new book before insert into DB: ', newBook);
+
   const query = `
     INSERT INTO books (user_id, author, title, started_at, finished_at, pages_amount, rating, review ) VALUES ('${newBook.user_id}', '${newBook.author}', '${newBook.title}', unixepoch('${newBook.started_at}'), unixepoch('${newBook.finished_at}'), '${newBook.pages_amount}', '${newBook.rating}', '${newBook.review}')
   `;
