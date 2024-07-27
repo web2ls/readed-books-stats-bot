@@ -67,7 +67,7 @@ app.post('/api/books/edit', editBook);
 app.delete('/api/books/:id', deleteBook);
 
 app.get('*', (_, response) => {
-  response.send(path.resolve(__dirname, 'dist', 'index.html'));
+  response.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {
