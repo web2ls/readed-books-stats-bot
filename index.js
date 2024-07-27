@@ -1,3 +1,5 @@
+const path = require('path');
+
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const express = require('express');
@@ -38,8 +40,10 @@ const TOKEN = process.env.BOT_TOKEN;
 const bot = new TelegramBot(TOKEN, {polling: true});
 
 app.use(express.static('dist'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cors());
 app.use(pino);
 
@@ -61,6 +65,10 @@ app.get('/api/users/quick-stats/:id', getQuickStats);
 app.post('/api/books/add', addBook);
 app.post('/api/books/edit', editBook);
 app.delete('/api/books/:id', deleteBook);
+
+app.get('*', (_, response) => {
+  response.send(path.resolve(__dirname, 'dist', 'index.html'));
+});
 
 app.listen(PORT, () => {
   console.log('Server has been started...');
