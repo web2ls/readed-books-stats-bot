@@ -17,6 +17,8 @@ import {
 import { BookItem } from "../book-card/book-card";
 import { searchBook, deleteBook } from '../../api';
 
+const DEFAULT_USERID = process.env.DEFAULT_USERID;
+
 export function FindBook() {
   const [books, setBooks] = useState([]);
 
@@ -24,13 +26,14 @@ export function FindBook() {
 
   const onSearchBook = (event) => {
     const value = event.target.value;
+    const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id ?? DEFAULT_USERID;
 
     if (!value.trim() || value.length < 2) {
       setBooks([]);
       return;
     }
 
-    searchBook(123, value).then(response => {
+    searchBook(userId, value).then(response => {
       setBooks(response);
     }).catch(error => {
       console.error(error);

@@ -15,11 +15,13 @@ import {
 } from '@chakra-ui/react';
 import { getQuickStats } from '../../api';
 
+const DEFAULT_USERID = process.env.DEFAULT_USERID;
+
 export function QuickStats() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const userId = window.Telegram?.WebApp?.initData?.user?.id ?? 123;
+    const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id ?? DEFAULT_USERID;
 
     getQuickStats(userId).then(response => {
       setData(response);

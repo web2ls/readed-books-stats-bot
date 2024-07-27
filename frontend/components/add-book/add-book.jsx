@@ -29,6 +29,8 @@ import "react-datepicker/dist/react-datepicker.css";
 registerLocale('ru', ru);
 setDefaultLocale('ru');
 
+const DEFAULT_USERID = process.env.DEFAULT_USERID;
+
 const initialFormState = {
   author: '',
   title: '',
@@ -61,13 +63,9 @@ export function AddBook() {
       return;
     }
 
-    console.log('Telegram is: ', window.Telegram);
-    console.log('user id is: ', window.Telegram?.WebApp?.initDataUnsafe?.user?.id);
-
     const data = {
       ...formState,
-      user_id: window.Telegram?.WebApp?.initData?.user?.id ?? 123,
-      user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id ?? 123,
+      user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id ?? DEFAULT_USERID,
       author: validateString(formState.author),
       title: validateString(formState.title),
       review: validateString(formState.review),
