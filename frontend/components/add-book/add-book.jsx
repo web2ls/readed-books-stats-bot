@@ -36,8 +36,8 @@ const initialFormState = {
   title: '',
   started_at: new Date(),
   finished_at: new Date(),
-  pages_amount: 0,
-  rating: 0,
+  pages_amount: null,
+  rating: null,
   review: '',
 };
 
@@ -127,14 +127,14 @@ export function AddBook() {
 
         <FormControl>
           <FormLabel>Количество страниц</FormLabel>
-          <NumberInput defaultValue={ 0 } min={ 0 } >
+          <NumberInput min={ 0 } >
             <NumberInputField value={ formState.pages_amount } onChange={ (event) => updateFormState('pages_amount', event.target.value) } />
           </NumberInput>
         </FormControl>
 
         <FormControl>
           <FormLabel>Рейтинг</FormLabel>
-          <NumberInput defaultValue={ 0 } min={ 0 } max={ 5 } precision={ 1 } >
+          <NumberInput min={ 0 } max={ 5 } precision={ 1 } >
             <NumberInputField value={ formState.rating } onChange={ (event) => updateFormState('rating', event.target.value) } />
           </NumberInput>
           <FormHelperText>Укажите ваш рейтинг по шкале от 1 до 5.</FormHelperText>

@@ -147,7 +147,7 @@ export function EditBook() {
 
         <FormControl>
           <FormLabel>Рейтинг</FormLabel>
-          <NumberInput defaultValue={ 0 } min={ 0 } max={ 5 } precision={ 1 } value={ Number(formState.rating) } >
+          <NumberInput min={ 0 } max={ 5 } precision={ 1 } value={ Number(formState.rating) } >
             <NumberInputField onChange={ (event) => updateFormState('rating', event.target.value) } />
           </NumberInput>
           <FormHelperText>Укажите ваш рейтинг по шкале от 1 до 5.</FormHelperText>
