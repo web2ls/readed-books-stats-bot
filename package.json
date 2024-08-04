@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "front": "parcel frontend/index.html --no-cache",
-    "build_prod_front": "parcel build frontend/index.html"
+    "build:prod": "parcel build frontend/index.html"
   },
   "keywords": [],
   "author": "",
