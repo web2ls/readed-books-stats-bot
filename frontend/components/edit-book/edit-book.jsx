@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   FormControl,
@@ -16,7 +15,9 @@ import {
   Button,
   ButtonGroup,
   Divider,
+  HStack,
   useToast,
+  useNumberInput,
 } from '@chakra-ui/react';
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import { ru } from 'date-fns/locale/ru';
@@ -35,7 +36,7 @@ const initialFormState = {
   started_at: new Date(),
   finished_at: new Date(),
   pages_amount: 0,
-  rating: 0,
+  rating: '',
   review: '',
 };
 
@@ -43,6 +44,19 @@ export function EditBook() {
   const [formState, setFormState] = useState(initialFormState);
   const [isAuthorError, setIsAuthorError] = useState(false);
   const [isTitleError, setIsTitleError] = useState(false);
+  const [ratingValue, setRatingValue] = useState(0);
+
+  const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
+  useNumberInput({
+    step: 0.1,
+    precision: 1,
+    min: 0,
+    max: 5,
+  });
+
+  const incProps = getIncrementButtonProps();
+  const decProps = getDecrementButtonProps();
+  const input = getInputProps();
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -51,6 +65,7 @@ export function EditBook() {
   useEffect(() => {
     getBook(id).then(response => {
       setFormState(response);
+      setRatingValue(response.rating);
     }).catch(error => {
       console.error(error);
       toast({
@@ -62,6 +77,51 @@ export function EditBook() {
       })
     })
   }, []);
+
+  const normalizeRatingValue = (value) => {
+    if (value > 5) {
+      value = 5;
+    } else if (value < 1) {
+      value = 1;
+    }
+
+    return value.toFixed(1);
+  }
+
+  const incrementRating = () => {
+    if (!Number(ratingValue)) {
+      setRatingValue(1);
+      return;
+    }
+
+    let newValue = Number(ratingValue) + 0.1;
+    setRatingValue(normalizeRatingValue(newValue));
+  }
+
+  const decrementRating = () => {
+    if (!Number(ratingValue)) {
+      setRatingValue(1);
+      return;
+    }
+
+    let newValue = Number(ratingValue) - 0.1;
+    setRatingValue(normalizeRatingValue(newValue));
+  }
+
+  const handleChangeRatingInput = (event) => {
+    const newValue = event.target.value;
+
+    setRatingValue(newValue);
+  }
+
+  const handleBlurRatingInput = () => {
+    if (isNaN(ratingValue) || Number(ratingValue) === 0) {
+      setRatingValue(0);
+      return;
+    }
+
+    setRatingValue(normalizeRatingValue(Number(ratingValue)));
+  }
 
   const onSubmit = () => {
     setIsAuthorError(false);
@@ -82,6 +142,7 @@ export function EditBook() {
       author: validateString(formState.author),
       title: validateString(formState.title),
       review: validateString(formState.review),
+      rating: ratingValue ? ratingValue : 0,
     }
 
     editBook(data).then(() => {
@@ -146,12 +207,14 @@ export function EditBook() {
         </FormControl>
 
         <FormControl>
-          <FormLabel>Рейтинг</FormLabel>
-          <NumberInput min={ 0 } max={ 5 } precision={ 1 } value={ Number(formState.rating) } >
-            <NumberInputField onChange={ (event) => updateFormState('rating', event.target.value) } />
-          </NumberInput>
-          <FormHelperText>Укажите ваш рейтинг по шкале от 1 до 5.</FormHelperText>
-        </FormControl>
+            <FormLabel>Рейтинг</FormLabel>
+            <HStack>
+              <Button {...incProps} onClick={ incrementRating } >+</Button>
+              <Input {...input} value={ ratingValue } onChange={ handleChangeRatingInput } onBlur={ handleBlurRatingInput } />
+              <Button {...decProps} onClick={ decrementRating } >-</Button>
+            </HStack>
+            <FormHelperText>Укажите ваш рейтинг по шкале от 1 до 5.</FormHelperText>
+          </FormControl>
 
         <FormControl>
           <FormLabel>Обзор</FormLabel>

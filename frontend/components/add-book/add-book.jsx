@@ -16,7 +16,9 @@ import {
   Button,
   ButtonGroup,
   Divider,
+  HStack,
   useToast,
+  useNumberInput,
 } from '@chakra-ui/react';
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import { ru } from 'date-fns/locale/ru';
@@ -48,6 +50,17 @@ export function AddBook() {
 
   const navigate = useNavigate();
   const toast = useToast();
+  const { value: ratingValue, getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
+  useNumberInput({
+    step: 0.1,
+    min: 1,
+    max: 5,
+    precision: 1,
+  });
+
+  const inc = getIncrementButtonProps();
+  const dec = getDecrementButtonProps();
+  const input = getInputProps();
 
   const onSubmit = () => {
     setIsAuthorError(false);
@@ -69,6 +82,7 @@ export function AddBook() {
       author: validateString(formState.author),
       title: validateString(formState.title),
       review: validateString(formState.review),
+      rating: ratingValue ? Number(ratingValue).toFixed(2) : 0,
     }
 
     addBook(data).then(() => {
@@ -134,9 +148,11 @@ export function AddBook() {
 
         <FormControl>
           <FormLabel>Рейтинг</FormLabel>
-          <NumberInput min={ 0 } max={ 5 } precision={ 1 } >
-            <NumberInputField value={ formState.rating } onChange={ (event) => updateFormState('rating', event.target.value) } />
-          </NumberInput>
+          <HStack>
+            <Button {...inc} >+</Button>
+            <Input {...input} />
+            <Button {...dec} >-</Button>
+          </HStack>
           <FormHelperText>Укажите ваш рейтинг по шкале от 1 до 5.</FormHelperText>
         </FormControl>
 
