@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Button,
   Card,
@@ -20,8 +20,9 @@ import {
 } from '@chakra-ui/react';
 
 export function BookItem(props) {
-  const { data, onDeleteBook } = props;
+  const { data, onDeleteBook, onViewBook } = props;
 
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
 
@@ -30,9 +31,23 @@ export function BookItem(props) {
     import.meta.url
   );
 
-  const handleDeleteBook = () => {
+  const onDeletePrompt = (event) => {
+    event.stopPropagation();
+
+    onOpen();
+  }
+
+  const handleDeleteBook = (event) => {
+    event.stopPropagation();
+
     onClose();
     onDeleteBook(data.id);
+  }
+
+  const onEditBook = (event) => {
+    event.stopPropagation();
+
+    navigate(`/edit/${data.id}`);
   }
 
   return (
@@ -41,6 +56,10 @@ export function BookItem(props) {
       direction={{ base: 'column', sm: 'row' }}
       overflow='hidden'
       variant='outline'
+      _hover={{
+        cursor: 'pointer',
+      }}
+      onClick={ onViewBook }
     >
       <Image
         objectFit='cover'
@@ -61,12 +80,11 @@ export function BookItem(props) {
 
         <CardFooter>
           <ButtonGroup variant='outline' spacing='6'>
-            <Link to={ `/edit/${ data.id }` }>
-              <Button variant='solid' colorScheme='gray'>
-                Редактировать
-              </Button>
-            </Link>
-            <Button variant='solid' colorScheme='red' onClick={ onOpen }>
+            <Button variant='solid' colorScheme='gray' onClick={ onEditBook }>
+              Редактировать
+            </Button>
+
+            <Button variant='solid' colorScheme='red' onClick={ onDeletePrompt }>
               Удалить
             </Button>
           </ButtonGroup>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import debounce from 'lodash.debounce';
 import {
   Button,
@@ -23,6 +23,7 @@ export function FindBook() {
   const [books, setBooks] = useState([]);
 
   const toast = useToast();
+  const navigate = useNavigate();
 
   const onSearchBook = (event) => {
     const value = event.target.value;
@@ -87,7 +88,12 @@ export function FindBook() {
 
       <Stack>
         { books.map(book => (
-          <BookItem key={ book.id } data={ book } onDeleteBook={ handleDeleteBook } />
+          <BookItem
+            key={ book.id }
+            data={ book }
+            onViewBook={ () => navigate(`/view/${book.id}`) }
+            onDeleteBook={ handleDeleteBook }
+          />
         )) }
       </Stack>
 

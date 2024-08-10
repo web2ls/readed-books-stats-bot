@@ -12,6 +12,7 @@ import { AddBook } from './components/add-book/add-book';
 import { FindBook } from './components/find-book/find-book';
 import { QuickStats } from './components/quick-stats/quick-stats';
 import { EditBook } from './components/edit-book/edit-book';
+import { ViewBook } from './components/view-book/view-book';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
   {
     path: "/edit/:id",
     element: <EditBook />
+  },
+  {
+    path: "/view/:id",
+    element: <ViewBook />
   },
 ]);
 
